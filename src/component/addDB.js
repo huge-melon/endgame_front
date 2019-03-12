@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import "./style/addDB.css"
 
 class AddDB extends Component {
 
@@ -65,17 +65,17 @@ class AddDB extends Component {
                 <div>
                     <h1>Add database!</h1>
                     DBtype:
-                    <input type={"text"} value={this.state.dbType} onChange={this.onDBtypeChange}/>
+                    <input type={"text"} value={this.state.dbType} onChange={this.onDBtypeChange}/>    <br />
                     DBurl:
-                    <input type={"text"} value={this.state.dbUrl} onChange={this.onDBurlChange}/>
+                    <input type={"text"} value={this.state.dbUrl} onChange={this.onDBurlChange}/>   <br />
                     DBPort:
-                    <input type={"text"} value={this.state.dbPort} onChange={this.onDBportChange}/>
+                    <input type={"text"} value={this.state.dbPort} onChange={this.onDBportChange}/>   <br />
                     DBName:
-                    <input type={"text"} value={this.state.dbName} onChange={this.onDBnameChange}/>
+                    <input type={"text"} value={this.state.dbName} onChange={this.onDBnameChange}/>   <br />
                     Username:
-                    <input type={"text"} value={this.state.userName} onChange={this.onUsernameChange}/>
+                    <input type={"text"} value={this.state.userName} onChange={this.onUsernameChange}/>   <br />
                     Userpassword:
-                    <input type={"password"} value={this.state.userPassword} onChange={this.onUserpasswordChange}/>
+                    <input type={"password"} value={this.state.userPassword} onChange={this.onUserpasswordChange}/>   <br />
 
                 </div>
                 <div>
