@@ -39,7 +39,8 @@ class AddDB extends Component {
 
 
     onDBtypeChange(event){
-        this.setState({dbType:event.target.value})
+        this.setState({dbType:event.target.value});
+        console.log(this.state.dbType);
     }
 
     onDBurlChange(event){

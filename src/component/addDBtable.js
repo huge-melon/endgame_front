@@ -16,7 +16,29 @@ import "antd/dist/antd.css";
 const { Option } = Select;
 
 class AddTable extends React.Component {
-    state = { visible: false };
+
+
+    state = {
+        visible: false,
+    };
+
+
+    handleSubmit=()=>{
+        let dbInfo = this.props.form.getFieldsValue();
+        console.log(dbInfo.dbType);
+        console.log(dbInfo.dbUrl);
+        console.log(dbInfo.dbPort);
+
+        console.log(dbInfo.dbName);
+
+        console.log(dbInfo.userName);
+        console.log(dbInfo.userPassword);
+
+        this.setState({
+            visible: false
+        });
+
+    }
 
     showDrawer = () => {
         this.setState({
@@ -160,7 +182,7 @@ class AddTable extends React.Component {
                         <Button onClick={this.onClose} style={{ marginRight: 8 }}>
                             测试
                         </Button>
-                        <Button onClick={this.onClose} type="primary">
+                        <Button onClick={this.handleSubmit} type="primary">
                             提交
                         </Button>
                     </div>
