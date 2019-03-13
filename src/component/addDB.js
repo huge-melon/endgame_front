@@ -61,7 +61,7 @@ class AddDB extends Component {
 
     render() {
         return (
-            <div>
+            <div className="back">
                 <div>
                     <h1>Add database!</h1>
                     DBtype:
