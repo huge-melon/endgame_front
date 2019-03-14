@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div className="App">
         <HomePage/>
-        <AddDB />
+        {/*<AddDB />*/}
       </div>
     );
   }

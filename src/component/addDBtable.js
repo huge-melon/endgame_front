@@ -22,9 +22,24 @@ class AddTable extends React.Component {
         visible: false,
     };
 
-
     handleSubmit=()=>{
         let dbInfo = this.props.form.getFieldsValue();
+        let self = this;
+        var targetUrl = "http://localhost:8080/test/adddb?dbType=" + dbInfo.dbType + "&dbUrl=" + dbInfo.dbUrl + "&dbPort=" + dbInfo.dbPort + "&dbName=" + dbInfo.dbName + "&userName="
+            + dbInfo.userName +"&userPassword=" + dbInfo.userPassword;
+        fetch(targetUrl);
+
+           /* .then(function (response) {
+            return response.text() //这里是后端返回的数据
+        }).then(function (body) {
+            console.log(body)
+            self.setState({value: body});
+
+        })
+*/
+
+        var targetUrl2="http://localhost:8080/test/adddb?dbType=${dbInfo.dbType}";
+
         console.log(dbInfo.dbType);
         console.log(dbInfo.dbUrl);
         console.log(dbInfo.dbPort);
@@ -33,6 +48,14 @@ class AddTable extends React.Component {
 
         console.log(dbInfo.userName);
         console.log(dbInfo.userPassword);
+        dbInfo.dbType="";
+        dbInfo.dbUrl="";
+        dbInfo.dbPort="";
+        dbInfo.dbName="";
+        dbInfo.userName="";
+        dbInfo.userPassword="";
+
+        this.props.form.setFieldsValue(dbInfo);
 
         this.setState({
             visible: false
