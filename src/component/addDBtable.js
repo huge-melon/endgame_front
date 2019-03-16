@@ -1,5 +1,4 @@
 import React from "react";
-import ReactDom from "react-dom";
 import {
     Drawer,
     Form,
@@ -22,12 +21,21 @@ class AddTable extends React.Component {
         visible: false,
     };
 
+    sendTableName=(tableName)=>{
+        this.props.addTableList(tableName)
+    }
+
+
     handleSubmit=()=>{
         let dbInfo = this.props.form.getFieldsValue();
         let self = this;
         var targetUrl = "http://localhost:8080/test/adddb?dbType=" + dbInfo.dbType + "&dbUrl=" + dbInfo.dbUrl + "&dbPort=" + dbInfo.dbPort + "&dbName=" + dbInfo.dbName + "&userName="
             + dbInfo.userName +"&userPassword=" + dbInfo.userPassword;
-        fetch(targetUrl);
+        fetch(targetUrl).then(res=>res.json())
+            .then(body=>{
+                console.log(body);
+                this.sendTableName(body);
+            });
 
            /* .then(function (response) {
             return response.text() //这里是后端返回的数据
@@ -40,22 +48,23 @@ class AddTable extends React.Component {
 
         var targetUrl2="http://localhost:8080/test/adddb?dbType=${dbInfo.dbType}";
 
-        console.log(dbInfo.dbType);
+/*        console.log(dbInfo.dbType);
         console.log(dbInfo.dbUrl);
         console.log(dbInfo.dbPort);
 
         console.log(dbInfo.dbName);
 
         console.log(dbInfo.userName);
-        console.log(dbInfo.userPassword);
+        console.log(dbInfo.userPassword);*/
         dbInfo.dbType="";
         dbInfo.dbUrl="";
         dbInfo.dbPort="";
         dbInfo.dbName="";
         dbInfo.userName="";
         dbInfo.userPassword="";
-
+/*
         this.props.form.setFieldsValue(dbInfo);
+*/
 
         this.setState({
             visible: false

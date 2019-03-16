@@ -3,15 +3,49 @@ import ReactDOM from 'react-dom';
 import "antd/dist/antd.css";
 import "./style.css"
 import {
-    Layout, Menu, Breadcrumb, Icon,
+    Layout, Menu, Breadcrumb, Icon, Button,
 } from 'antd';
 
 import AddDBtable from "../component/addDBtable";
+import SearchCom from "../component/search"
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
 
+
+
+
 class HomePage extends React.Component{
+
+
+    constructor(props){
+        super(props);
+        this.state={
+            mytext: "",
+
+            tableName: ""
+
+        }
+    }
+
+    handleSubmit=()=>{
+        var targetUrl = "http://localhost:8080/test/showtabledata?dbType=MySQL&dbName=mybatis&tableName=user";
+        fetch(targetUrl)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(myJson) {
+                console.log(myJson);
+
+            });
+    }
+
+    addTableList=(tableNameList)=>{
+        this.setState({tableName:tableNameList})
+        console.log(this.state.tableName)
+    }
+
+
     render(){
         return(
             <div className="HomePage">
@@ -37,11 +71,15 @@ class HomePage extends React.Component{
                                 defaultOpenKeys={["sub1"]}
                                 style={{ height: "100%", borderRight: 0 }}
                             >
+
+
+
+
                                 <SubMenu
                                     key="sub1"
                                     title={
                                         <span>
-                  <Icon type="user" />
+               <Icon type="database" />
                   subnav 1
                     </span>
                                     }
@@ -55,7 +93,7 @@ class HomePage extends React.Component{
                                     key="sub2"
                                     title={
                                         <span>
-                  <Icon type="laptop" />
+                  <Icon type="database" />
                   subnav 2
                     </span>
                                     }
@@ -69,7 +107,7 @@ class HomePage extends React.Component{
                                     key="sub3"
                                     title={
                                         <span>
-                  <Icon type="notification" />
+                  <Icon type="database" />
                   subnav 3
                     </span>
                                     }
@@ -79,7 +117,8 @@ class HomePage extends React.Component{
                                     <Menu.Item key="11">option11</Menu.Item>
                                     <Menu.Item key="12">option12</Menu.Item>
                                 </SubMenu>
-                                <AddDBtable />
+                                {/*添加数据库的按钮，将父组件中的addTableList方法传递给它*/}
+                                <AddDBtable  addTableList={this.addTableList.bind(this)} />
                             </Menu>
                         </Sider>
                         <Layout style={{ padding: "0 24px 24px" }}>
@@ -96,7 +135,16 @@ class HomePage extends React.Component{
                                     minHeight: 280
                                 }}
                             >
+
+                                <SearchCom />
                                 Content
+
+                                <Button onClick={this.handleSubmit} type="primary">
+                                    提交
+                                </Button>
+                                <div>{this.state.mytext.id}</div>
+                                <diV>{this.state.mytext.username}</diV>
+
                             </Content>
                         </Layout>
                     </Layout>
