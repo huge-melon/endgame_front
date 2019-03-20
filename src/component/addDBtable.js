@@ -28,34 +28,15 @@ class AddTable extends React.Component {
 
     handleSubmit=()=>{
         let dbInfo = this.props.form.getFieldsValue();
-        let self = this;
-        var targetUrl = "http://localhost:8080/test/adddb?dbType=" + dbInfo.dbType + "&dbUrl=" + dbInfo.dbUrl + "&dbPort=" + dbInfo.dbPort + "&dbName=" + dbInfo.dbName + "&userName="
+        let targetUrl = "http://localhost:8080/test/adddb?dbType=" + dbInfo.dbType + "&dbUrl=" + dbInfo.dbUrl + "&dbPort=" + dbInfo.dbPort + "&dbName=" + dbInfo.dbName + "&userName="
             + dbInfo.userName +"&userPassword=" + dbInfo.userPassword;
         fetch(targetUrl).then(res=>res.json())
             .then(body=>{
-                console.log(body);
+                console.log("addDB: ");
+                console.log(body)
                 this.sendTableName(body);
             });
-
-           /* .then(function (response) {
-            return response.text() //这里是后端返回的数据
-        }).then(function (body) {
-            console.log(body)
-            self.setState({value: body});
-
-        })
-*/
-
-        var targetUrl2="http://localhost:8080/test/adddb?dbType=${dbInfo.dbType}";
-
-/*        console.log(dbInfo.dbType);
-        console.log(dbInfo.dbUrl);
-        console.log(dbInfo.dbPort);
-
-        console.log(dbInfo.dbName);
-
-        console.log(dbInfo.userName);
-        console.log(dbInfo.userPassword);*/
+      //  var targetUrl2="http://localhost:8080/test/adddb?dbType=${dbInfo.dbType}";
         dbInfo.dbType="";
         dbInfo.dbUrl="";
         dbInfo.dbPort="";
@@ -109,7 +90,7 @@ class AddTable extends React.Component {
                                 <Form.Item label="数据库类型">
                                     {getFieldDecorator("dbType", {
                                         rules: [
-                                            { required: true, message: "Please select database type" }
+                                            { required: true, message: "MySQL" }/*Please select database type*/
                                         ]
                                     })(
                                         <Select placeholder="Please select database type">
@@ -190,7 +171,7 @@ class AddTable extends React.Component {
                                         rules: [
                                             { required: true, message: "Please enter Password" }
                                         ]
-                                    })(<Input type="password" placeholder="Please enter Password" />)}
+                                    })(<Input type="text" placeholder="Please enter Password" />)}
                                 </Form.Item>
                             </Col>
 
