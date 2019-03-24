@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import "antd/dist/antd.css";
 import "./style.css"
 import {
     Layout, Menu, Breadcrumb, Icon, Button,
 } from 'antd';
-
-import AddDBtable from "../component/addDBtable";
-import TableData from "../component/tabledata";
-import SearchCom from "../component/search"
-
-import TableMetaData from "../component/tablemetadata"
+import MyTab from "../component/homepage/tabList"
+import AddDBtable from "../component/homepage/addDBtable";
+import TableData from "../component/homepage/tabledata";
+import SearchCom from "../component/homepage/search"
+import TableMetaData from "../component/homepage/tablemetadata"
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
@@ -41,39 +39,12 @@ class HomePage extends React.Component{
         }
     }
 
-    handleSubmit=()=>{
-        var targetUrl = "http://localhost:8080/test/showtabledata?dbType=MySQL&dbName=mybatis&tableName=user";
-        fetch(targetUrl)
-            .then(function(response) {
-                return response.json();
-            })
-            .then(myJson=> {
-              //  console.log("myjsonL")
-               // console.log(myJson);
-                this.setState({
-                    mytext: myJson
-                })
-            });
-
+    componentWillMount(){
+        let temp = JSON.parse(localStorage.getItem("tableName"));
+        if(temp){
+            this.setState({ tableName: temp })
+        }
     }
-
-/*
-    handleTypeName=(name,index)=>{
-        console.log("index:"+index);
-        console.log(index);
-/!*
-        this.setState(prevState => {
-            return {typeName: prevState.typeName+name}
-        });*!/
-
-        this.setState({
-            typeName: index
-        })
-        console.log("TypaName:");
-        console.log(name)
-    }
-*/
-
 
     // 点击标签返回，路径信息
     handleClick=(e)=>{
@@ -112,12 +83,14 @@ class HomePage extends React.Component{
                 hasThisType=true;
             }
         }
+        //如果是新的一种数据库类型，则添加
         if(!hasThisType){
             let newDB = {title:"",children:[]};
             newDB.title= tableNameList.title
             newDB.children = [...newDB.children,tableNameList.children];//改成里边的值
             temp = [...temp,newDB];
         }
+        localStorage.setItem("tableName", JSON.stringify(temp));
         this.setState({ tableName: temp })
     }
 
@@ -131,17 +104,16 @@ class HomePage extends React.Component{
                     )}
                 else {
                   /*拆开写， dbname和dbtype放在一起，字符串，直接查，*/
-                    return <Menu.Item key={menu.TABLE_NAME} > {menu.TABLE_NAME} </Menu.Item> /*onClick={this.handleClick.bind(this)}*/
+                    return <Menu.Item key={menu.TABLE_NAME} > <Icon type="table" />{menu.TABLE_NAME} </Menu.Item> /*onClick={this.handleClick.bind(this)}*/
                 }
             })
     }
-
 
     render(){
         return(
             <div className="HomePage">
                 <Layout>
-                    <Header className="header">
+                    {/*<Header className="header">
                         <div className="logo" />
                         <Menu
                             theme="dark"
@@ -153,8 +125,8 @@ class HomePage extends React.Component{
                             <Menu.Item key="2">nav 2</Menu.Item>
                             <Menu.Item key="3">nav 3</Menu.Item>
                         </Menu>
-                    </Header>
-                    <Layout>
+                    </Header>*/}
+                   {/* <Layout>*/}
                         <Sider width={200} style={{ background: "#fff" }}>
                             <Menu
                                 mode="inline"
@@ -170,11 +142,11 @@ class HomePage extends React.Component{
                             </Menu>
                         </Sider>
                         <Layout style={{ padding: "0 24px 24px" }}>
-                            <Breadcrumb style={{ margin: "16px 0" }}>
+                           {/* <Breadcrumb style={{ margin: "16px 0" }}>
                                 <Breadcrumb.Item>Home</Breadcrumb.Item>
                                 <Breadcrumb.Item>List</Breadcrumb.Item>
                                 <Breadcrumb.Item>App</Breadcrumb.Item>
-                            </Breadcrumb>
+                            </Breadcrumb>*/}
 
                             <Content
                                 style={{
@@ -184,25 +156,14 @@ class HomePage extends React.Component{
                                     minHeight: 280
                                 }}
                             >
-                                表数据|元数据
+                                <MyTab metadata={this.state.metadata} data={this.state.data}/>
 
-                                <TableMetaData metadata={this.state.metadata} />
-                                <TableData data={this.state.data} />//直接解析 data，获得表头数据
-
-
-                                {/*
-                                <SearchCom />
-                                <Button onClick={this.handleSubmit.bind(this)} type="primary">
-                                    提交
-                                </Button>
-
-                                {console.log(this.state.mytext)}
-                               {this.state.mytext.id}
-                               {this.state.mytext.username}*/}
-
+                               {/* <TableMetaData metadata={this.state.metadata} />
+                                <TableData data={this.state.data} />*/}
+                                {/*<SearchCom />*/}
                             </Content>
                         </Layout>
-                    </Layout>
+                 {/*   </Layout>*/}
                 </Layout >
             </div>
         );
