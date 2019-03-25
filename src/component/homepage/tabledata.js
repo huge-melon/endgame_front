@@ -10,7 +10,11 @@ class TableData extends React.Component {
     state = {
         searchText: '',
     };
-
+    /*
+    一开始所有的框都选中，传递给数据库查询的是所有的字段名，比如 name，age，address
+    之后点击多选框，修改多选框中的值，
+    对应的sql语句中返回的表也发生变化，比如 name，age 取消address的选项
+    * */
     getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({
                              setSelectedKeys, selectedKeys, confirm, clearFilters,

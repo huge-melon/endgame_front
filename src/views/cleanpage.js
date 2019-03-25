@@ -4,6 +4,10 @@ import "./style.css"
 import {
     Layout, Menu, Breadcrumb, Icon, Button,
 } from 'antd';
+import { Route,NavLink } from 'react-router-dom';
+import DelDuplicated from "../component/cleanpage/delduplicated";
+import DeleteByNull from "../component/cleanpage/deletebynull";
+import DeleteByCondition from "../component/cleanpage/deletebycondition";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
@@ -18,23 +22,24 @@ class CleanPage extends React.Component{
                     <Sider width={200} style={{ background: "#fff" }}>
                         <Menu
                             mode="inline"
-                            defaultSelectedKeys={["1"]}
-                            defaultOpenKeys={["sub1"]}
+                           // defaultSelectedKeys={["1"]}
+                            //defaultOpenKeys={["sub1"]}
                             style={{ height: "100%", borderRight: 0 }}
                         >
-                            <Menu.Item key="1">
+                            <Menu.Item key="delduplicated">
+                                <NavLink to="/dataclean/delduplicated">
                                 <Icon type="filter" />
-                                <span>去除重复记录</span>
+                                    去除重复记录
+                                </NavLink>
                             </Menu.Item>
-                            <Menu.Item key="2">
+                            <Menu.Item key="fill">
                                 <Icon type="plus-square" />
                                 <span>字段补全</span>
                             </Menu.Item>
                             <SubMenu key="sub1" title={<span><Icon type="close-square" />删除记录</span>}>
-                                <Menu.Item key="1">按条件删除</Menu.Item>
-                                <Menu.Item key="2">按缺失项删除</Menu.Item>
+                                <Menu.Item key="deleteByCondition"><NavLink to="/dataclean/deleteByCondition">按条件删除</NavLink></Menu.Item>
+                                <Menu.Item key="deleteByNull"><NavLink to="/dataclean/deleteByNull">按缺失项删除</NavLink></Menu.Item>
                                 <Menu.Item key="3">删除指定列</Menu.Item>
-
                             </SubMenu>
                             <SubMenu key="sub2" title={<span><Icon type="form" />字段修改</span>}>
                                 <Menu.Item key="5">日期</Menu.Item>
@@ -53,7 +58,11 @@ class CleanPage extends React.Component{
                                 minHeight: 280
                             }}
                         >
-                            123456789
+                            <main>
+                                <Route path="/dataclean/delduplicated"  component={DelDuplicated} />
+                                <Route path="/dataclean/deleteByNull" component={DeleteByNull}/>
+                                <Route path="/dataclean/deleteByCondition" component={DeleteByCondition}/>
+                            </main>
 
                         </Content>
                     </Layout>

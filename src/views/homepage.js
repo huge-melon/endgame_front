@@ -32,7 +32,6 @@ class HomePage extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            mytext: [],
             tableName: [], // 列表显示的内容
             data: [],
             metadata: [],
@@ -40,6 +39,7 @@ class HomePage extends React.Component{
     }
 
     componentWillMount(){
+        // localStorage.clear();
         let temp = JSON.parse(localStorage.getItem("tableName"));
         if(temp){
             this.setState({ tableName: temp })
@@ -108,6 +108,10 @@ class HomePage extends React.Component{
                 }
             })
     }
+    cleanclick=()=>{
+        localStorage.clear();
+    }
+
 
     render(){
         return(
@@ -131,7 +135,7 @@ class HomePage extends React.Component{
                             <Menu
                                 mode="inline"
                                 defaultSelectedKeys={["1"]}
-                                defaultOpenKeys={["sub1"]}
+                                // defaultOpenKeys={["sub1"]}
                                 style={{ height: "100%", borderRight: 0 }}
                             >
                                 {this.mySubMenu(this.state.tableName)}
@@ -161,6 +165,7 @@ class HomePage extends React.Component{
                                {/* <TableMetaData metadata={this.state.metadata} />
                                 <TableData data={this.state.data} />*/}
                                 {/*<SearchCom />*/}
+                                <Button type="Normal" size="small" onClick={this.cleanclick}>clean</Button>
                             </Content>
                         </Layout>
                  {/*   </Layout>*/}
