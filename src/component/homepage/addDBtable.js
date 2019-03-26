@@ -100,7 +100,6 @@ class AddTable extends React.Component {
                                             <Option value="MonogoDB">MonogoDB</Option>
                                             <Option value="Neo4j">Neo4j</Option>
                                             <Option value="JanusGraph">JanusGraph</Option>
-
                                         </Select>
                                     )}
                                 </Form.Item>

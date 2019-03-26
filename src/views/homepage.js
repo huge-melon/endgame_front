@@ -6,9 +6,6 @@ import {
 } from 'antd';
 import MyTab from "../component/homepage/tabList"
 import AddDBtable from "../component/homepage/addDBtable";
-import TableData from "../component/homepage/tabledata";
-import SearchCom from "../component/homepage/search"
-import TableMetaData from "../component/homepage/tablemetadata"
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;

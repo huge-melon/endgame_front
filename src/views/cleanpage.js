@@ -8,6 +8,7 @@ import { Route,NavLink } from 'react-router-dom';
 import DelDuplicated from "../component/cleanpage/delduplicated";
 import DeleteByNull from "../component/cleanpage/deletebynull";
 import DeleteByCondition from "../component/cleanpage/deletebycondition";
+import DeleteTableColumn from "../component/cleanpage/deletetablecolumn";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
@@ -39,7 +40,7 @@ class CleanPage extends React.Component{
                             <SubMenu key="sub1" title={<span><Icon type="close-square" />删除记录</span>}>
                                 <Menu.Item key="deleteByCondition"><NavLink to="/dataclean/deleteByCondition">按条件删除</NavLink></Menu.Item>
                                 <Menu.Item key="deleteByNull"><NavLink to="/dataclean/deleteByNull">按缺失项删除</NavLink></Menu.Item>
-                                <Menu.Item key="3">删除指定列</Menu.Item>
+                                <Menu.Item key="deleteTableColumn"><NavLink to="/dataclean/deleteTableColumn">删除指定列</NavLink></Menu.Item>
                             </SubMenu>
                             <SubMenu key="sub2" title={<span><Icon type="form" />字段修改</span>}>
                                 <Menu.Item key="5">日期</Menu.Item>
@@ -62,6 +63,7 @@ class CleanPage extends React.Component{
                                 <Route path="/dataclean/delduplicated"  component={DelDuplicated} />
                                 <Route path="/dataclean/deleteByNull" component={DeleteByNull}/>
                                 <Route path="/dataclean/deleteByCondition" component={DeleteByCondition}/>
+                                <Route path="/dataclean/deleteTableColumn" component={DeleteTableColumn}/>
                             </main>
 
                         </Content>

@@ -13,7 +13,8 @@ class Rdb2Rdb extends React.Component{
             targetColumnName: [],
             targetSelectTable:[], //级联选择中选中的表名
             userDefine: false,
-            mapping: []
+            sourceName:[],
+            targetName:[],
         }
     }
 
@@ -114,14 +115,20 @@ class Rdb2Rdb extends React.Component{
         })
     }
 
-
+    // 执行导出工作
     handleCilckButton(){
 
-        let source = this.state.sourceSelectTable;
-        let target = this.state.targetSelectTable;
+        //传递 源表名，目标表名，标志，Sourcemap， Targetmap
+        let source = this.state.sourceName;
+        let target = this.state.targetName;
+
         let flag = this.state.userDefine;
-        let mapping = this.state.mapping;
-        if( source == [] ||  target == "" ||(flag == true && mapping.length==0)) {
+        let sourcePath = this.state.sourceSelectTable ; //级联选择中选中的表名
+        let targetPath = this.state.targetSelectTable;  //级联选择中选中的表名
+
+
+
+        if( sourcePath == [] ||  targetPath == "" ||(flag == true && (source == [] ||target == [] ))) {
             message.error("请重新选择操作类型");
             this.setState({
                 tableName: [], // 列表显示的内容
@@ -130,10 +137,12 @@ class Rdb2Rdb extends React.Component{
                 targetColumnName: [],
                 targetSelectTable:[], //级联选择中选中的表名
                 userDefine: false,
-                mapping: [],
+                sourceName:[],
+                targetName:[],
             })
         }
         else{
+            //通过Post方法
             let targetUrl="";
             console.log(targetUrl);
             fetch(targetUrl).then(res=>res.text())
@@ -145,6 +154,18 @@ class Rdb2Rdb extends React.Component{
                     }
                 });
         }
+    }
+    receiveMap(mapTable){
+        let sourceList= [];
+        let targetList= [];
+        for(let k in mapTable.keys){
+            sourceList.push(mapTable["source"+mapTable.keys[k]]);
+            targetList.push(mapTable["target"+mapTable.keys[k]]);
+        }
+        this.setState({
+            sourceName:sourceList,
+            targetName:targetList,
+        })
     }
 
     render(){
@@ -162,12 +183,11 @@ class Rdb2Rdb extends React.Component{
                     <Radio.Button value="no">否</Radio.Button>
                 </Radio.Group>
                 <br /><br />
-                {this.state.userDefine&&<MapTable/>}
+                {this.state.userDefine&&<MapTable sourceList={this.state.sourceColumnName} targetList={this.state.targetColumnName} receiveFromSon={this.receiveMap}/>}
                 <br /><br />
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
-
             </div>
         )
     }

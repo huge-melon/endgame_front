@@ -1,19 +1,19 @@
-
 import React from "react"
-import {Button, Cascader, Icon, message} from "antd";
-import MapTable from "../storagepage/mappingtable";
+import {Button, Cascader, Select, Icon , message  } from 'antd';
+import "antd/dist/antd.css";
 
-class DeleteByCondition extends React.Component{
+const Option = Select.Option;
+
+
+class DeleteTableColumn extends React.Component{
+
     constructor(props){
         super(props);
         this.state={
+            selectTable:[], //级联选择中选中的表名
             tableName: [], // 列表显示的内容
-            sourceColumnName: [],
-            sourceSelectTable:[], //级联选择中选中的表名
-            targetColumnName: [],
-            targetSelectTable:[], //级联选择中选中的表名
-            sourceName:[],
-            targetName:[],
+            columnName: [],
+            selectColumn: "",
         }
     }
 
@@ -48,9 +48,8 @@ class DeleteByCondition extends React.Component{
         }
     };
 
-
-    //根据级联选择框的内容从数据库中提取元数据 col.value为选中后的值 col.label 为展示的值
-    SourceChange(value) {
+    //根据级联选择框的内容从数据库中提取元数据
+    CascaderonChange(value) {
         console.log(value);
         if(value.length > 0 ){
             let targetUrl = "http://localhost:8080/test/gettablemetadata?dbType=" + value[0] + "&dbName=" + value[1] + "&tableName="
@@ -58,97 +57,103 @@ class DeleteByCondition extends React.Component{
             let columns = [];
             fetch(targetUrl).then(res=>res.json())
                 .then(body=>{
-                    console.log("value body");
-                    console.log(body);
                     for(let key in body){
                         let col = {};
                         col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME+" "+body[key].COLUMN_TYPE;
+                        col.label = body[key].COLUMN_NAME;
                         columns= [...columns,col];
                     }
                     this.setState({
-                        sourceColumnName: columns,
-                        sourceSelectTable: value
+                        columnName: columns,
+                        selectTable: value
                     })
                 });
         }
         else {
             this.setState({
-                sourceColumnName: [],
-                sourceSelectTable: []
+                columnName: [],
+                selectTable: []
             })
         }
     }
 
+    SelecthandleChange(value) {
+        console.log(`selected ${value}`);
+        this.setState({
+            selectColumn: value
+        })
+    }
 
-    // 执行导出工作
+    SelecthandleBlur() {
+        console.log('blur');
+    }
+
+    SelecthandleFocus() {
+        console.log('focus');
+    }
+
     handleCilckButton(){
 
-        //传递 源表名，目标表名，标志，Sourcemap， Targetmap
-        let source = this.state.sourceName;
-        let target = this.state.targetName;
+        let tables = this.state.selectTable;
+        let selectColumn = this.state.selectColumn;
 
-        let flag = this.state.userDefine;
-        let sourcePath = this.state.sourceSelectTable ; //级联选择中选中的表名
-        let targetPath = this.state.targetSelectTable;  //级联选择中选中的表名
-
-
-
-        if( sourcePath == [] ||  targetPath == "" ||(flag == true && (source == [] ||target == [] ))) {
+        if( tables == [] ||  selectColumn == "") {
             message.error("请重新选择操作类型");
             this.setState({
+                selectTable:[], //级联选择中选中的表名
                 tableName: [], // 列表显示的内容
-                sourceColumnName: [],
-                sourceSelectTable:[], //级联选择中选中的表名
-                targetColumnName: [],
-                targetSelectTable:[], //级联选择中选中的表名
-                userDefine: false,
-                sourceName:[],
-                targetName:[],
+                columnName: [],
+                selectColumn: ""
             })
         }
         else{
-            //通过Post方法
-            let targetUrl="";
+            let targetUrl = "http://localhost:8080/test/deleteTableColumn?dbType=" + tables[0] + "&dbName="+tables[1]+"&tableName="+tables[2]+"&columnName="+selectColumn;
             console.log(targetUrl);
             fetch(targetUrl).then(res=>res.text())
                 .then(body=>{
                     if(body == "true"){
-                        message.success('导出成功');
-                    }else {
-                        message.error("导出失败");
+                        message.success('删除成功');
                     }
                 });
         }
     }
-    receiveMap(mapTable){
-        let sourceList= [];
-        let targetList= [];
-        for(let k in mapTable.keys){
-            sourceList.push(mapTable["source"+mapTable.keys[k]]);
-            targetList.push(mapTable["target"+mapTable.keys[k]]);
-        }
-        this.setState({
-            sourceName:sourceList,
-            targetName:targetList,
-        })
-    }
 
     render(){
-        return (
+        return(
             <div>
                 选择进行操作的表名：
-                <Cascader options={this.state.tableName} onChange={this.SourceChange.bind(this)} placeholder="Please select" />
                 <br /><br />
-                添加条件：
-                <MapTable sourceList={this.state.sourceColumnName} receiveFromSon={this.receiveMap}/>
+                <Cascader options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
+                <br /><br /><br />
+                选择要删除的列：
                 <br /><br />
+                <Select
+                    showSearch
+                    style={{ width: 200 }}
+                    placeholder="Select a column"
+                    optionFilterProp="children"
+                    onChange={this.SelecthandleChange.bind(this)}
+                    onFocus={this.SelecthandleFocus}
+                    onBlur={this.SelecthandleBlur}
+                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                >
+                    {this.state.columnName.map((item,index)=>{
+                        return <Option key={index} value={item.value}>{item.label}</Option>
+                    })}
+                </Select>
+                <br /><br /><br />
+
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
-            </div>
-        )
-    }
-}
 
-export default DeleteByCondition;
+
+            </div>
+
+        )
+
+    }
+
+}
+export default DeleteTableColumn;
+
