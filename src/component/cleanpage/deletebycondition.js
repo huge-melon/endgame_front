@@ -1,19 +1,17 @@
 
 import React from "react"
 import {Button, Cascader, Icon, message} from "antd";
-import MapTable from "../storagepage/mappingtable";
+import Conditions from "./conditions"
 
 class DeleteByCondition extends React.Component{
     constructor(props){
         super(props);
         this.state={
             tableName: [], // 列表显示的内容
-            sourceColumnName: [],
-            sourceSelectTable:[], //级联选择中选中的表名
-            targetColumnName: [],
-            targetSelectTable:[], //级联选择中选中的表名
-            sourceName:[],
-            targetName:[],
+            ColumnName: [],
+            SelectTable:[], //级联选择中选中的表名
+            conditionTable: [],
+            conditionValue: []
         }
     }
 
@@ -67,44 +65,32 @@ class DeleteByCondition extends React.Component{
                         columns= [...columns,col];
                     }
                     this.setState({
-                        sourceColumnName: columns,
-                        sourceSelectTable: value
+                        ColumnName: columns,
+                        SelectTable: value
                     })
                 });
         }
         else {
             this.setState({
-                sourceColumnName: [],
-                sourceSelectTable: []
+                ColumnName: [],
+                SelectTable: []
             })
         }
     }
 
 
-    // 执行导出工作
     handleCilckButton(){
 
-        //传递 源表名，目标表名，标志，Sourcemap， Targetmap
-        let source = this.state.sourceName;
-        let target = this.state.targetName;
-
-        let flag = this.state.userDefine;
-        let sourcePath = this.state.sourceSelectTable ; //级联选择中选中的表名
-        let targetPath = this.state.targetSelectTable;  //级联选择中选中的表名
+        let tablePath = this.state.SelectTable ; //级联选择中选中的表名
 
 
 
-        if( sourcePath == [] ||  targetPath == "" ||(flag == true && (source == [] ||target == [] ))) {
+        if( tablePath == [] ) {
             message.error("请重新选择操作类型");
             this.setState({
                 tableName: [], // 列表显示的内容
-                sourceColumnName: [],
-                sourceSelectTable:[], //级联选择中选中的表名
-                targetColumnName: [],
-                targetSelectTable:[], //级联选择中选中的表名
-                userDefine: false,
-                sourceName:[],
-                targetName:[],
+                ColumnName: [],
+                SelectTable:[], //级联选择中选中的表名
             })
         }
         else{
@@ -122,16 +108,16 @@ class DeleteByCondition extends React.Component{
         }
     }
     receiveMap(mapTable){
-        let sourceList= [];
+       /* let table= [];
         let targetList= [];
         for(let k in mapTable.keys){
             sourceList.push(mapTable["source"+mapTable.keys[k]]);
             targetList.push(mapTable["target"+mapTable.keys[k]]);
         }
         this.setState({
-            sourceName:sourceList,
-            targetName:targetList,
-        })
+            conditionTable: [],
+            conditionValue: []
+        })*/
     }
 
     render(){
@@ -141,7 +127,7 @@ class DeleteByCondition extends React.Component{
                 <Cascader options={this.state.tableName} onChange={this.SourceChange.bind(this)} placeholder="Please select" />
                 <br /><br />
                 添加条件：
-                <MapTable sourceList={this.state.sourceColumnName} receiveFromSon={this.receiveMap}/>
+                <Conditions columnNameList={this.state.ColumnName} receiveFromSon={this.receiveMap}/>
                 <br /><br />
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作

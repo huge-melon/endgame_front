@@ -9,6 +9,7 @@ import DelDuplicated from "../component/cleanpage/delduplicated";
 import DeleteByNull from "../component/cleanpage/deletebynull";
 import DeleteByCondition from "../component/cleanpage/deletebycondition";
 import DeleteTableColumn from "../component/cleanpage/deletetablecolumn";
+import CompletFiled from "../component/cleanpage/completfiled";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
@@ -33,9 +34,9 @@ class CleanPage extends React.Component{
                                     去除重复记录
                                 </NavLink>
                             </Menu.Item>
-                            <Menu.Item key="fill">
+                            <Menu.Item key="completFiled">
                                 <Icon type="plus-square" />
-                                <span>字段补全</span>
+                                <span><NavLink to="/dataclean/completFiled">字段补全</NavLink></span>
                             </Menu.Item>
                             <SubMenu key="sub1" title={<span><Icon type="close-square" />删除记录</span>}>
                                 <Menu.Item key="deleteByCondition"><NavLink to="/dataclean/deleteByCondition">按条件删除</NavLink></Menu.Item>
@@ -64,6 +65,9 @@ class CleanPage extends React.Component{
                                 <Route path="/dataclean/deleteByNull" component={DeleteByNull}/>
                                 <Route path="/dataclean/deleteByCondition" component={DeleteByCondition}/>
                                 <Route path="/dataclean/deleteTableColumn" component={DeleteTableColumn}/>
+
+                                <Route path="/dataclean/completFiled" component={CompletFiled}/>
+
                             </main>
 
                         </Content>
