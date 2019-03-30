@@ -62,7 +62,7 @@ class Rdb2Rdb extends React.Component{
                     for(let key in body){
                         let col = {};
                         col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME;
+                        col.label = body[key].COLUMN_NAME+" "+body[key].COLUMN_TYPE;
                         columns= [...columns,col];
                     }
                     this.setState({
@@ -91,7 +91,7 @@ class Rdb2Rdb extends React.Component{
                     for(let key in body){
                         let col = {};
                         col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME;
+                        col.label = body[key].COLUMN_NAME+" "+body[key].COLUMN_TYPE;
                         columns= [...columns,col];
                     }
                     this.setState({
@@ -155,6 +155,8 @@ class Rdb2Rdb extends React.Component{
                 });
         }
     }
+
+    //接受从子组件传递过来的字段名的对应关系
     receiveMap(mapTable){
         let sourceList= [];
         let targetList= [];
@@ -166,6 +168,9 @@ class Rdb2Rdb extends React.Component{
             sourceName:sourceList,
             targetName:targetList,
         })
+        console.log("rdb2rdb接受子组件的值");
+        console.log(sourceList);
+        console.log(targetList);
     }
 
     render(){
@@ -183,7 +188,7 @@ class Rdb2Rdb extends React.Component{
                     <Radio.Button value="no">否</Radio.Button>
                 </Radio.Group>
                 <br /><br />
-                {this.state.userDefine&&<MapTable sourceList={this.state.sourceColumnName} targetList={this.state.targetColumnName} receiveFromSon={this.receiveMap}/>}
+                {this.state.userDefine&&<MapTable sourceList={this.state.sourceColumnName} targetList={this.state.targetColumnName} receiveFromSon={this.receiveMap.bind(this)}/>}
                 <br /><br />
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作

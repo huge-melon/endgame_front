@@ -48,6 +48,10 @@ class DynamicFieldSet extends React.Component {
     }
 
     add = () => {
+        this.setState({
+            sourceColumnName: this.props.sourceList,
+            targetColumnName: this.props.targetList
+        })
         const { form } = this.props;
         // can use data-binding to get
         const keys = form.getFieldValue('keys');
@@ -61,8 +65,6 @@ class DynamicFieldSet extends React.Component {
 
     sendTable(){
         let mapTable = this.props.form.getFieldsValue();
-        console.log("sendTable");
-        console.log(mapTable);
         this.setState({
             tableMapName: mapTable
         })
@@ -119,7 +121,7 @@ class DynamicFieldSet extends React.Component {
                 </Col>
                 <Col span={5}>
                     <Icon
-                        className="dynamic-delete-button"
+                        className="dynamic-delete-button1"
                         type="minus-circle-o"
                         onClick={() => this.remove(k)}
                     />

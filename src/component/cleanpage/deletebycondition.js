@@ -8,10 +8,11 @@ class DeleteByCondition extends React.Component{
         super(props);
         this.state={
             tableName: [], // 列表显示的内容
-            ColumnName: [],
-            SelectTable:[], //级联选择中选中的表名
-            conditionTable: [],
-            conditionValue: []
+            selectTable:[], //级联选择中选中的表名
+            columnName: [], //条件框里要显示列名
+            /*conditionColumn: [], //条件的列名
+            conditionValue: [] //条件值*/
+            conditions: [],
         }
     }
 
@@ -65,39 +66,84 @@ class DeleteByCondition extends React.Component{
                         columns= [...columns,col];
                     }
                     this.setState({
-                        ColumnName: columns,
-                        SelectTable: value
+                        columnName: columns,
+                        selectTable: value
                     })
                 });
         }
         else {
             this.setState({
-                ColumnName: [],
-                SelectTable: []
+                columnName: [],
+                selectTable: []
             })
         }
     }
 
 
+    //从子组件接收传递的值   数值类型和字符串类型要分开，。将数据类型也传递过来？
+    receiveMap(mapTable){
+        /* let columnList= [];
+         let operatorList= [];
+         let conditionList= [];*/
+        let conditions=[];
+        for(let k in mapTable.keys){
+            let str="";
+            str = mapTable["column"+mapTable.keys[k]] + mapTable["operator"+mapTable.keys[k]]  + "\'" + mapTable["value"+mapTable.keys[k]] + "\'";
+            conditions.push(str);
+            /*columnList.push(mapTable["column"+mapTable.keys[k]]);
+            operatorList.push(mapTable["operator"+mapTable.keys[k]])
+            conditionList.push(mapTable["condition"+mapTable.keys[k]]);*/
+        }
+        this.setState({
+            /* conditionColumn:columnList,
+             conditionValue:conditionList,*/
+            conditions:conditions
+        })
+        console.log("deletebyconditions");
+        /* console.log(columnList);
+         console.log(conditionList);*/
+        console.log(conditions)
+    }
+
+
+
+    // 提交按钮  将提交按钮放进子组件中，可省略一个
     handleCilckButton(){
-
-        let tablePath = this.state.SelectTable ; //级联选择中选中的表名
-
-
+        let tablePath = this.state.selectTable ; //级联选择中选中的表名
+       /* let dbType = tablePath[0];
+        let dbName = tablePath[1];
+        let tableName = tablePath[2];
+        let columnName= this.state.conditionColumn;
+        let conditionValue = this.state.conditionValue;*/
+        let conditionTable = {};
+        conditionTable.dbType = tablePath[0];
+        conditionTable.dbName = tablePath[1];
+        conditionTable.tableName = tablePath[2];
+        conditionTable.conditions = this.state.conditions;
+       /* conditions.headMap = columnName;
+        conditions.endMap = conditionValue;*/
+        console.log("conditions")
+        console.log(JSON.stringify(conditionTable));
 
         if( tablePath == [] ) {
             message.error("请重新选择操作类型");
             this.setState({
                 tableName: [], // 列表显示的内容
-                ColumnName: [],
-                SelectTable:[], //级联选择中选中的表名
+                columnName: [],
+                selectTable:[], //级联选择中选中的表名
             })
         }
         else{
             //通过Post方法
-            let targetUrl="";
+            let targetUrl="http://localhost:8080/test/deleteByCondition";
             console.log(targetUrl);
-            fetch(targetUrl).then(res=>res.text())
+            fetch(targetUrl,{
+                method:"POST",
+                body:JSON.stringify(conditionTable),
+                headers: {
+                    'content-type': 'application/json'
+                },
+            }).then(res=>res.text())
                 .then(body=>{
                     if(body == "true"){
                         message.success('导出成功');
@@ -107,18 +153,8 @@ class DeleteByCondition extends React.Component{
                 });
         }
     }
-    receiveMap(mapTable){
-       /* let table= [];
-        let targetList= [];
-        for(let k in mapTable.keys){
-            sourceList.push(mapTable["source"+mapTable.keys[k]]);
-            targetList.push(mapTable["target"+mapTable.keys[k]]);
-        }
-        this.setState({
-            conditionTable: [],
-            conditionValue: []
-        })*/
-    }
+
+
 
     render(){
         return (
@@ -127,7 +163,7 @@ class DeleteByCondition extends React.Component{
                 <Cascader options={this.state.tableName} onChange={this.SourceChange.bind(this)} placeholder="Please select" />
                 <br /><br />
                 添加条件：
-                <Conditions columnNameList={this.state.ColumnName} receiveFromSon={this.receiveMap}/>
+                <Conditions columnNameList={this.state.columnName} receiveFromSon={this.receiveMap.bind(this)}/>
                 <br /><br />
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
