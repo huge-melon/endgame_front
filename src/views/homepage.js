@@ -6,6 +6,7 @@ import {
 } from 'antd';
 import MyTab from "../component/homepage/tabList"
 import AddDBtable from "../component/homepage/addDBtable";
+import ShowAsList from "../component/homepage/showAsList";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
@@ -32,6 +33,7 @@ class HomePage extends React.Component{
             tableName: [], // 列表显示的内容
             data: [],
             metadata: [],
+            clickMongoDB: false
         }
     }
 
@@ -46,25 +48,47 @@ class HomePage extends React.Component{
     // 点击标签返回，路径信息
     handleClick=(e)=>{
         if(e.keyPath.length == 3){
-            let targetUrl = "http://localhost:8080/test/gettablemetadata?dbType=" + e.keyPath[2] + "&dbName=" + e.keyPath[1] + "&tableName="
-                + e.keyPath[0];
-            fetch(targetUrl).then(res=>res.json())
-                .then(body=>{
-                    console.log("targetUrl: ");
-                    console.log(targetUrl);
-                    console.log(body);
-                    this.setState({metadata: body})
-                });
 
-            let targetUrl2 = "http://localhost:8080/test/gettabledata?dbType=" + e.keyPath[2] + "&dbName=" + e.keyPath[1] + "&tableName="
-                + e.keyPath[0];
-            fetch(targetUrl2).then(res=>res.json())
-                .then(body=>{
-                    console.log("targetUrl2: ");
-                    console.log(targetUrl2);
-                    console.log(body);
-                    this.setState({data: body})
-                });
+            if(e.keyPath[2] == "MongoDB"){
+                console.log("MongoDB")
+                this.setState({
+                    clickMongoDB:true
+                })
+
+                let targetUrl2 = "http://localhost:8080/test/gettabledata?dbType=" + e.keyPath[2] + "&dbName=" + e.keyPath[1] + "&tableName="
+                    + e.keyPath[0];
+                fetch(targetUrl2).then(res=>res.json())
+                    .then(body=>{
+                        console.log("targetUrl2: ");
+                        console.log(targetUrl2);
+                        console.log(body);
+                        this.setState({data: body})
+                    });
+            }
+            else{
+                this.setState({
+                    clickMongoDB:false
+                })
+                let targetUrl = "http://localhost:8080/test/gettablemetadata?dbType=" + e.keyPath[2] + "&dbName=" + e.keyPath[1] + "&tableName="
+                    + e.keyPath[0];
+                fetch(targetUrl).then(res=>res.json())
+                    .then(body=>{
+                        console.log("targetUrl: ");
+                        console.log(targetUrl);
+                        console.log(body);
+                        this.setState({metadata: body})
+                    });
+
+                let targetUrl2 = "http://localhost:8080/test/gettabledata?dbType=" + e.keyPath[2] + "&dbName=" + e.keyPath[1] + "&tableName="
+                    + e.keyPath[0];
+                fetch(targetUrl2).then(res=>res.json())
+                    .then(body=>{
+                        console.log("targetUrl2: ");
+                        console.log(targetUrl2);
+                        console.log(body);
+                        this.setState({data: body})
+                    });
+            }
         }
     }
 
@@ -91,6 +115,7 @@ class HomePage extends React.Component{
         this.setState({ tableName: temp })
     }
 
+    // 树状下拉菜单
     mySubMenu=(data)=>{
           return data.map((menu,index)=>{
                 if(menu.children){
@@ -114,20 +139,6 @@ class HomePage extends React.Component{
         return(
             <div className="HomePage">
                 <Layout>
-                    {/*<Header className="header">
-                        <div className="logo" />
-                        <Menu
-                            theme="dark"
-                            mode="horizontal"
-                            defaultSelectedKeys={["2"]}
-                            style={{ lineHeight: "64px" }}
-                        >
-                            <Menu.Item key="1">nav 1</Menu.Item>
-                            <Menu.Item key="2">nav 2</Menu.Item>
-                            <Menu.Item key="3">nav 3</Menu.Item>
-                        </Menu>
-                    </Header>*/}
-                   {/* <Layout>*/}
                         <Sider width={200} style={{ background: "#fff" }}>
                             <Menu
                                 mode="inline"
@@ -157,15 +168,15 @@ class HomePage extends React.Component{
                                     minHeight: 280
                                 }}
                             >
-                                <MyTab metadata={this.state.metadata} data={this.state.data}/>
 
+                                {!this.state.clickMongoDB&&<MyTab metadata={this.state.metadata} data={this.state.data}/>}
+                                {this.state.clickMongoDB&&<ShowAsList data={this.state.data}/>}
                                {/* <TableMetaData metadata={this.state.metadata} />
                                 <TableData data={this.state.data} />*/}
                                 {/*<SearchCom />*/}
                                 <Button type="Normal" size="small" onClick={this.cleanclick}>clean</Button>
                             </Content>
                         </Layout>
-                 {/*   </Layout>*/}
                 </Layout >
             </div>
         );

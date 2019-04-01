@@ -28,9 +28,15 @@ class AddTable extends React.Component {
 
     handleSubmit=()=>{
         let dbInfo = this.props.form.getFieldsValue();
-        let targetUrl = "http://localhost:8080/test/adddb?dbType=" + dbInfo.dbType + "&dbUrl=" + dbInfo.dbUrl + "&dbPort=" + dbInfo.dbPort + "&dbName=" + dbInfo.dbName + "&userName="
-            + dbInfo.userName +"&userPassword=" + dbInfo.userPassword;
-        fetch(targetUrl).then(res=>res.json())
+        let targetUrl = "http://localhost:8080/test/adddb";
+        fetch(targetUrl,
+            {
+                method:"POST",
+                body:JSON.stringify(dbInfo),
+                headers: {
+                    'content-type': 'application/json'
+                },
+            }).then(res=>res.json())
             .then(body=>{
                 console.log("addDB: ");
                 console.log(body)
@@ -97,9 +103,9 @@ class AddTable extends React.Component {
                                             <Option value="MySQL">MySQL</Option>
                                             <Option value="Oracle">Oracle</Option>
                                             <Option value="PostgreSQL">PostgreSQL</Option>
-                                            <Option value="MonogoDB">MonogoDB</Option>
-                                            <Option value="Neo4j">Neo4j</Option>
-                                            <Option value="JanusGraph">JanusGraph</Option>
+                                            <Option value="MongoDB">MongoDB</Option>
+                                            {/*<Option value="Neo4j">Neo4j</Option>
+                                            <Option value="JanusGraph">JanusGraph</Option>*/}
                                         </Select>
                                     )}
                                 </Form.Item>
