@@ -33,10 +33,10 @@ class StoragePage extends React.Component {
                                 <Icon type="plus-square" />
                                 <span>关系型到非关系型</span>
                             </Menu.Item>
-                            <Menu.Item key="nodb2nodb">
+                         {/*   <Menu.Item key="nodb2nodb">
                                 <Icon type="plus-square" />
                                 <span>非关系型到非关系型</span>
-                            </Menu.Item>
+                            </Menu.Item>*/}
                         </Menu>
                     </Sider>
                     <Layout style={{ padding: "0 24px 24px" }}>

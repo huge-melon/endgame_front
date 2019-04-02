@@ -39,16 +39,17 @@ class AddTable extends React.Component {
             }).then(res=>res.json())
             .then(body=>{
                 console.log("addDB: ");
+                console.log(JSON.stringify(dbInfo));
                 console.log(body)
                 this.sendTableName(body);
             });
       //  var targetUrl2="http://localhost:8080/test/adddb?dbType=${dbInfo.dbType}";
-        dbInfo.dbType="";
+       /* dbInfo.dbType="";
         dbInfo.dbUrl="";
         dbInfo.dbPort="";
         dbInfo.dbName="";
         dbInfo.userName="";
-        dbInfo.userPassword="";
+        dbInfo.userPassword="";*/
 /*
         this.props.form.setFieldsValue(dbInfo);
 */
@@ -176,7 +177,7 @@ class AddTable extends React.Component {
                                         rules: [
                                             { required: true, message: "Please enter Password" }
                                         ]
-                                    })(<Input type="text" placeholder="Please enter Password" />)}
+                                    })(<Input type="password" placeholder="Please enter Password" />)}
                                 </Form.Item>
                             </Col>
 

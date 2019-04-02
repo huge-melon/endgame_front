@@ -34,21 +34,22 @@ class CleanPage extends React.Component{
                                     去除重复记录
                                 </NavLink>
                             </Menu.Item>
-                            <Menu.Item key="completFiled">
-                                <Icon type="plus-square" />
-                                <span><NavLink to="/dataclean/completFiled">字段补全</NavLink></span>
-                            </Menu.Item>
+
                             <SubMenu key="sub1" title={<span><Icon type="close-square" />删除记录</span>}>
                                 <Menu.Item key="deleteByCondition"><NavLink to="/dataclean/deleteByCondition">按条件删除</NavLink></Menu.Item>
                                 <Menu.Item key="deleteByNull"><NavLink to="/dataclean/deleteByNull">按缺失项删除</NavLink></Menu.Item>
                                 <Menu.Item key="deleteTableColumn"><NavLink to="/dataclean/deleteTableColumn">删除指定列</NavLink></Menu.Item>
                             </SubMenu>
-                            <SubMenu key="sub2" title={<span><Icon type="form" />字段修改</span>}>
+                        {/*    <SubMenu key="sub2" title={<span><Icon type="form" />字段修改</span>}>
                                 <Menu.Item key="5">日期</Menu.Item>
                                 <Menu.Item key="6">前后缀</Menu.Item>
                                 <Menu.Item key="7">option7</Menu.Item>
                                 <Menu.Item key="8">option8</Menu.Item>
                             </SubMenu>
+                            <Menu.Item key="completFiled">
+                                <Icon type="plus-square" />
+                                <span><NavLink to="/dataclean/completFiled">字段补全</NavLink></span>
+                            </Menu.Item>*/}
                         </Menu>
                     </Sider>
                     <Layout style={{ padding: "0 24px 24px" }}>

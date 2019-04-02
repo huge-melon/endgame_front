@@ -141,6 +141,8 @@ class DeleteTableColumn extends React.Component{
                         return <Option key={index} value={item.value}>{item.label}</Option>
                     })}
                 </Select>
+
+                {/*设计成多选框，后台遍历传递的列名，分别执行*/}
                 <br /><br /><br />
 
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>

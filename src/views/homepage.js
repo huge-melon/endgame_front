@@ -117,6 +117,8 @@ class HomePage extends React.Component{
 
     // 树状下拉菜单
     mySubMenu=(data)=>{
+        console.log("****************")
+        console.log(data)
           return data.map((menu,index)=>{
                 if(menu.children){
                     return (
@@ -126,6 +128,7 @@ class HomePage extends React.Component{
                     )}
                 else {
                   /*拆开写， dbname和dbtype放在一起，字符串，直接查，*/
+
                     return <Menu.Item key={menu.TABLE_NAME} > <Icon type="table" />{menu.TABLE_NAME} </Menu.Item> /*onClick={this.handleClick.bind(this)}*/
                 }
             })
