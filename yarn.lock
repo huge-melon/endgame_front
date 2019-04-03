@@ -8753,8 +8753,8 @@ react-is@^16.8.1:
 
 react-json-view@^1.19.1:
   version "1.19.1"
-  resolved "http://registry.npm.taobao.org/react-json-view/download/react-json-view-1.19.1.tgz#95d8e59e024f08a25e5dc8f076ae304eed97cf5c"
-  integrity sha1-ldjlngJPCKJeXcjwdq4wTu2Xz1w=
+  resolved "https://registry.yarnpkg.com/react-json-view/-/react-json-view-1.19.1.tgz#95d8e59e024f08a25e5dc8f076ae304eed97cf5c"
+  integrity sha512-u5e0XDLIs9Rj43vWkKvwL8G3JzvXSl6etuS5G42a8klMohZuYFQzSN6ri+/GiBptDqlrXPTdExJVU7x9rrlXhg==
   dependencies:
     flux "^3.1.3"
     react-base16-styling "^0.6.0"

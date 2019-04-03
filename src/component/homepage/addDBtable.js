@@ -44,15 +44,13 @@ class AddTable extends React.Component {
                 this.sendTableName(body);
             });
       //  var targetUrl2="http://localhost:8080/test/adddb?dbType=${dbInfo.dbType}";
-       /* dbInfo.dbType="";
+        dbInfo.dbType="";
         dbInfo.dbUrl="";
         dbInfo.dbPort="";
         dbInfo.dbName="";
         dbInfo.userName="";
-        dbInfo.userPassword="";*/
-/*
+        dbInfo.userPassword="";
         this.props.form.setFieldsValue(dbInfo);
-*/
 
         this.setState({
             visible: false
