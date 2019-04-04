@@ -62,7 +62,11 @@ class HomePage extends React.Component{
                         console.log("targetUrl2: ");
                         console.log(targetUrl2);
                         console.log(body);
-                        this.setState({data: body})
+                        let temp={};
+                        temp.datas=body;
+                        temp.dbName=e.keyPath[1];
+                        temp.collectionName=e.keyPath[0];
+                        this.setState({data: temp})
                     });
             }
             else{

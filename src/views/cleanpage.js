@@ -14,8 +14,6 @@ import CompletFiled from "../component/cleanpage/completfiled";
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
 
-
-
 class CleanPage extends React.Component{
     render(){
         return(
@@ -40,16 +38,20 @@ class CleanPage extends React.Component{
                                 <Menu.Item key="deleteByNull"><NavLink to="/dataclean/deleteByNull">按缺失项删除</NavLink></Menu.Item>
                                 <Menu.Item key="deleteTableColumn"><NavLink to="/dataclean/deleteTableColumn">删除指定列</NavLink></Menu.Item>
                             </SubMenu>
-                        {/*    <SubMenu key="sub2" title={<span><Icon type="form" />字段修改</span>}>
+
+                            <SubMenu key="sub2" title={<span><Icon type="form" />字段修改</span>}>
                                 <Menu.Item key="5">日期</Menu.Item>
                                 <Menu.Item key="6">前后缀</Menu.Item>
-                                <Menu.Item key="7">option7</Menu.Item>
-                                <Menu.Item key="8">option8</Menu.Item>
                             </SubMenu>
+                            <Menu.Item key="item1">
+                                <Icon type="plus-square" />
+                                <span>修改列属性</span>
+                            </Menu.Item>
+
                             <Menu.Item key="completFiled">
                                 <Icon type="plus-square" />
                                 <span><NavLink to="/dataclean/completFiled">字段补全</NavLink></span>
-                            </Menu.Item>*/}
+                            </Menu.Item>
                         </Menu>
                     </Sider>
                     <Layout style={{ padding: "0 24px 24px" }}>

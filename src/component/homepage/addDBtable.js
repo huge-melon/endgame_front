@@ -95,7 +95,7 @@ class AddTable extends React.Component {
                                 <Form.Item label="数据库类型">
                                     {getFieldDecorator("dbType", {
                                         rules: [
-                                            { required: true, message: "MySQL" }/*Please select database type*/
+                                            { required: true, message: "Please select database type" }
                                         ]
                                     })(
                                         <Select placeholder="Please select database type">

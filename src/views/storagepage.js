@@ -1,9 +1,6 @@
 import React from "react"
 import {Cascader, Icon, Layout, Radio,Menu} from "antd";
 import { Route,NavLink } from 'react-router-dom';
-import DelDuplicated from "../component/cleanpage/delduplicated";
-import DeleteByNull from "../component/cleanpage/deletebynull";
-import DeleteByCondition from "../component/cleanpage/deletebycondition";
 import Rdb2Rdb from "../component/storagepage/rdb2rdb";
 
 const { SubMenu } = Menu;
