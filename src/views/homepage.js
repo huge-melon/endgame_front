@@ -55,6 +55,16 @@ class HomePage extends React.Component{
                     clickMongoDB:true
                 })
 
+                let targetUrl = "http://localhost:8080/test/gettablemetadata?dbType=" + e.keyPath[2] + "&dbName=" + e.keyPath[1] + "&tableName="
+                    + e.keyPath[0];
+                fetch(targetUrl).then(res=>res.json())
+                    .then(body=>{
+                        console.log("targetUrl: ");
+                        console.log(targetUrl);
+                        console.log(body);
+                        this.setState({metadata: body})
+                    });
+
                 let targetUrl2 = "http://localhost:8080/test/gettabledata?dbType=" + e.keyPath[2] + "&dbName=" + e.keyPath[1] + "&tableName="
                     + e.keyPath[0];
                 fetch(targetUrl2).then(res=>res.json())
@@ -176,8 +186,12 @@ class HomePage extends React.Component{
                                 }}
                             >
 
-                                {!this.state.clickMongoDB&&<MyTab metadata={this.state.metadata} data={this.state.data}/>}
-                                {this.state.clickMongoDB&&<ShowAsList data={this.state.data}/>}
+                               <MyTab showType={this.state.clickMongoDB} metadata={this.state.metadata} data={this.state.data}/>
+
+                                {/*{this.state.clickMongoDB&&<ShowAsList data={this.state.data}/>}*/}
+
+                                {console.log("11111111111111111:")}
+                                {console.log(this.state.data)}
                                {/* <TableMetaData metadata={this.state.metadata} />
                                 <TableData data={this.state.data} />*/}
                                 {/*<SearchCom />*/}

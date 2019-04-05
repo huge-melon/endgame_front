@@ -3,6 +3,7 @@ import "antd/dist/antd.css";
 import {List, Divider, Form, Input, Select, Button} from "antd";
 import ReactJson from "react-json-view";
 const {Option} = Select;
+let listData;
 class ShowAsList1 extends React.Component{
 
     constructor(props){
@@ -28,8 +29,10 @@ class ShowAsList1 extends React.Component{
     }
 
     render(){
-        let listData = [];
         if(!listData){
+
+            console.log("**%%&&:")
+            console.log(this.props.data.datas);
             listData = this.props.data.datas;
         }
         else{
