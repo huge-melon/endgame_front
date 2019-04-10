@@ -1,8 +1,11 @@
-import React from "react"
-import {Cascader, Input, Select, Radio, Button, Icon, message} from "antd"
-const Option = Select.Option;
+import React from "react";
+import "antd/dist/antd.css";
+import {Button, Cascader, Icon, Input, message, Select,Radio} from "antd";
 
-class CompletFiled extends React.Component{
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
+class CutString extends React.Component{
+
     constructor(props){
         super(props);
         this.state={
@@ -12,7 +15,6 @@ class CompletFiled extends React.Component{
             selectColumn:"",//Select选中的列名
             sourceType:"",
             typeMap:{},
-            isCustomize:false,
         }
     }
 
@@ -89,33 +91,13 @@ class CompletFiled extends React.Component{
             selectColumn:e
         })
     }
-    handleRadionChange(e){
-        if(e.target.value == 'customize'){
-            this.setState({
-                isCustomize:true
-            })
-        }else{
-            this.setState({
-                isCustomize:false
-            })
-        }
 
-    }
 
     handleCilckButton(){
-        let targetUrl;
+        //未修改完
         let path = this.cascaderTableName.state.value;
-        if(this.defaultValue){
-            if(!this.defaultValue.state.value){
-                message.error("默认值不能为空")
-                return;
-            }else{
-                targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=${this.defaultValue.state.value}`;
-            }
-        }
-        else {
-            targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=null`;
-        }
+        let targetUrl = `http://localhost:8080/test/cutString?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&priKey=${this.priKey.state.value}&opType=${this.opType.state.value}&beginKey=${this.beginPos.state.value}&endKey=${this.endPos.state.value}`;
+
         console.log(targetUrl);
         fetch(targetUrl).then(res=>res.text())
             .then(body=>{
@@ -142,24 +124,33 @@ class CompletFiled extends React.Component{
                 </Select>
                 <br/> <br/>
                 已选字段类型：
-                <Input  style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
+                <Input ref={e => this.dataType = e} style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
                 <br/> <br/>
-                填入值:
-                <Radio.Group ref={e => this.completType = e} defaultValue="average" buttonStyle="solid" onChange={this.handleRadionChange.bind(this)}>
-                    <Radio.Button value="average">平均值</Radio.Button>
-                    <Radio.Button value="mode">众数</Radio.Button>
-                    <Radio.Button value="median">中位数</Radio.Button>
-                    <Radio.Button value="customize">自定义</Radio.Button>
-                </Radio.Group>
+                选择主键：
 
-                {this.state.isCustomize&&<div> <br/> <br/>请输入默认值：<Input ref={e => this.defaultValue = e} size={"small"} style={{ width: '20%' }} /></div>}
+                <RadioGroup ref={e => this.priKey = e} options={this.state.columnName} />
+
                 <br/> <br/>
+                定位方式：
+                <RadioGroup  ref={e => this.opType = e} defaultValue="pos" buttonStyle="solid">
+                    <Radio.Button value="pos">位置索引</Radio.Button>
+                    <Radio.Button value="key">关键字</Radio.Button>
+                </RadioGroup >
+
+                <br /><br /><br />
+                起始位置：
+                <Input ref={e => this.beginPos = e} style={{ width: '20%' }} />
+                <br/> <br/>
+                结束位置：
+                <Input ref={e => this.endPos = e} style={{ width: '20%' }} />
+                <br/> <br/>
+
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
-
             </div>
         );
     }
 }
-export default CompletFiled;
+
+export default CutString;

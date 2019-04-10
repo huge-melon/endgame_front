@@ -54,14 +54,14 @@ class TableData extends React.Component {
             }
         },
         render: (text) => {
-            return (
-                <Highlighter
-                    highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-                    searchWords={[this.state.searchText]}
-                    autoEscape
-                    textToHighlight={text.toString()}
-                />
-            )
+                return (
+                    <Highlighter
+                        highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                        searchWords={[this.state.searchText]}
+                        autoEscape
+                        textToHighlight={text?text.toString():"NULL"}
+                    />
+                )
         },
     })
 

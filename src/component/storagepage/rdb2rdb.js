@@ -117,15 +117,12 @@ class Rdb2Rdb extends React.Component{
 
     // 执行导出工作
     handleCilckButton(){
-
         //传递 源表名，目标表名，标志，Sourcemap， Targetmap
         let source = this.state.sourceName;
         let target = this.state.targetName;
-
         let flag = this.state.userDefine;
         let sourcePath = this.state.sourceSelectTable ; //级联选择中选中的表名
         let targetPath = this.state.targetSelectTable;  //级联选择中选中的表名
-
 
 
         if( sourcePath == [] ||  targetPath == "" ||(flag == true && (source == [] ||target == [] ))) {
@@ -143,9 +140,30 @@ class Rdb2Rdb extends React.Component{
         }
         else{
             //通过Post方法
-            let targetUrl="";
+            let targetUrl="http://localhost:8080/test/rdbToRdb";
+            let requestBody={};
+            requestBody.sourceDbType=sourcePath[0];
+            requestBody.sourceDbName=sourcePath[1];
+            requestBody.sourceTableName=sourcePath[2];
+
+            requestBody.targetDbType=targetPath[0];
+            requestBody.targetDbName=targetPath[1];
+            requestBody.targetTableName=targetPath[2];
+
+            requestBody.userDefine = flag;
+            requestBody.sourceColumnList = source;
+            requestBody.targetColumnList = target;
+            console.log("requestBody")
+            console.log(requestBody)
+
             console.log(targetUrl);
-            fetch(targetUrl).then(res=>res.text())
+            fetch(targetUrl,{
+                method:"POST",
+                body:JSON.stringify(requestBody),
+                headers: {
+                    'content-type': 'application/json'
+                },
+            }).then(res=>res.text())
                 .then(body=>{
                     if(body == "true"){
                         message.success('导出成功');
@@ -153,6 +171,7 @@ class Rdb2Rdb extends React.Component{
                         message.error("导出失败");
                     }
                 });
+
         }
     }
 

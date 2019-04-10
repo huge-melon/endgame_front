@@ -1,8 +1,15 @@
-import React from "react"
-import {Cascader, Input, Select, Radio, Button, Icon, message} from "antd"
+import React from "react";
+import "antd/dist/antd.css";
+import {Button, Cascader, Icon, Input, message, Select,Radio} from "antd";
+import UpdateDataTable from "./updatedatatable";
 const Option = Select.Option;
+const RadioGroup=Radio.Group;
 
-class CompletFiled extends React.Component{
+
+//const transLetter = {"+" : "%2B","/" : "%2F","?" : "%3F","%" : "%25","#" : "%23","&" : "%26","\\":"%5C"};
+
+class DataVerify extends React.Component{
+
     constructor(props){
         super(props);
         this.state={
@@ -12,7 +19,9 @@ class CompletFiled extends React.Component{
             selectColumn:"",//Select选中的列名
             sourceType:"",
             typeMap:{},
-            isCustomize:false,
+            data:[], //传给子组件的数值
+            connectMess:{},
+            isShow:false,
         }
     }
 
@@ -46,9 +55,6 @@ class CompletFiled extends React.Component{
             })
         }
     };
-
-
-
 
     //根据级联选择框的内容从数据库中提取元数据
     CascaderonChange(value) {
@@ -89,50 +95,82 @@ class CompletFiled extends React.Component{
             selectColumn:e
         })
     }
-    handleRadionChange(e){
-        if(e.target.value == 'customize'){
-            this.setState({
-                isCustomize:true
-            })
-        }else{
-            this.setState({
-                isCustomize:false
-            })
-        }
-
-    }
 
     handleCilckButton(){
-        let targetUrl;
-        let path = this.cascaderTableName.state.value;
-        if(this.defaultValue){
-            if(!this.defaultValue.state.value){
-                message.error("默认值不能为空")
-                return;
-            }else{
-                targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=${this.defaultValue.state.value}`;
+        let path = this.state.selectTable;
+        let priKey = this.priKey.state.value;
+        let columnName = this.state.selectColumn;
+        let regularExpress = this.regularExpress.state.value;
+      /*  let newRegular="";
+        for(let i=0;i<regularExpress.length;i++){
+            if(transLetter[regularExpress[i]]){
+                newRegular+=transLetter[regularExpress[i]];
+            }
+            else {
+                newRegular+=regularExpress[i];
             }
         }
-        else {
-            targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=null`;
-        }
+
+        console.log("Old RE:"+ regularExpress);
+        console.log("New RE:"+ newRegular);*/
+       // let targetUrl = `http://localhost:8080/test/dataVerify?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${columnName}&priKey=${priKey}&regularExpress=${newRegular}`;
+
+        let targetUrl = "http://localhost:8080/test/dataVerify";
+        let requestBody ={};
+        requestBody.dbType=path[0];
+        requestBody.dbName=path[1];
+        requestBody.tableName=path[2];
+        requestBody.columnName=columnName;
+        requestBody.priKey=priKey;
+
+        this.setState({
+            connectMess: requestBody,
+        })
+        requestBody.regularExpress=regularExpress;
         console.log(targetUrl);
-        fetch(targetUrl).then(res=>res.text())
+        fetch(targetUrl,{
+            method:"POST",
+            body:JSON.stringify(requestBody),
+            headers: {
+                'content-type': 'application/json'
+            },
+        }).then(res=>res.json())
             .then(body=>{
-                if(body == "true"){
-                    message.success('修改成功');
+                console.log("正则表达式验证：");
+                console.log(body);
+                let temp=[];
+                for(let i=0;i<body.length;i++){
+                    let node={};
+                    node.id=body[i][priKey];
+                    if(!body[i][columnName]){
+                        node.sourcedata = "null"
+                    }
+                    else{
+                        node.sourcedata = body[i][columnName];
+                    }
+                    node.key = node.id;
+                    temp.push(node);
                 }
-                else{
-                    message.error('出现未知错误');
-                }
+                console.log("temp:");
+                console.log(temp);
+                this.setState({
+                    data:temp,
+                    isShow:true,
+                })
             });
+    }
+
+    configShow(){
+        this.setState({
+            isShow:false,
+        })
     }
 
     render(){
         return(
             <div>
                 输入表：
-                <Cascader ref={e => this.cascaderTableName = e} options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
+                <Cascader  options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
                 <br/> <br/>
                 输入字段：
                 <Select style={{ width: '20%' }} onChange={this.handleSelectChange.bind(this)}>
@@ -142,24 +180,21 @@ class CompletFiled extends React.Component{
                 </Select>
                 <br/> <br/>
                 已选字段类型：
-                <Input  style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
+                <Input style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
                 <br/> <br/>
-                填入值:
-                <Radio.Group ref={e => this.completType = e} defaultValue="average" buttonStyle="solid" onChange={this.handleRadionChange.bind(this)}>
-                    <Radio.Button value="average">平均值</Radio.Button>
-                    <Radio.Button value="mode">众数</Radio.Button>
-                    <Radio.Button value="median">中位数</Radio.Button>
-                    <Radio.Button value="customize">自定义</Radio.Button>
-                </Radio.Group>
-
-                {this.state.isCustomize&&<div> <br/> <br/>请输入默认值：<Input ref={e => this.defaultValue = e} size={"small"} style={{ width: '20%' }} /></div>}
+                选择主键：
+                <RadioGroup ref={e => this.priKey = e} options={this.state.columnName} />
+                <br/> <br/>
+                校验的正则表达式：
+                <Input ref={e => this.regularExpress = e} style={{ width: '20%' }} />
                 <br/> <br/>
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
-
+                <UpdateDataTable data={this.state.data} configShow={this.configShow.bind(this)} isShowModal={this.state.isShow} connectMess={this.state.connectMess}/>
             </div>
         );
     }
 }
-export default CompletFiled;
+
+export default DataVerify;

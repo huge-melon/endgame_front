@@ -1,16 +1,19 @@
-import React from "react"
-import {Button, Cascader, Icon , message,Radio  } from 'antd';
+import React from "react";
 import "antd/dist/antd.css";
+import {Cascader, Input, Select} from "antd";
+const Option = Select.Option;
 
-const RadioGroup=Radio.Group
-class DeleteTableColumn extends React.Component{
+class UpdateColumnValue extends React.Component{
 
     constructor(props){
         super(props);
         this.state={
             tableName: [], // 级联选择中显示的内容
             selectTable:[], //级联选择中选中的表名
-            columnName: [], //选择框显示的内容
+            columnName: [], //表中的列名
+            selectColumn:"",//Select选中的列名
+            sourceType:"",
+            typeMap:{},
         }
     }
 
@@ -45,6 +48,9 @@ class DeleteTableColumn extends React.Component{
         }
     };
 
+
+
+
     //根据级联选择框的内容从数据库中提取元数据
     CascaderonChange(value) {
         console.log(value);
@@ -52,6 +58,7 @@ class DeleteTableColumn extends React.Component{
             let targetUrl = "http://localhost:8080/test/gettablemetadata?dbType=" + value[0] + "&dbName=" + value[1] + "&tableName="
                 + value[2];
             let columns = [];
+            let type={};
             fetch(targetUrl).then(res=>res.json())
                 .then(body=>{
                     for(let key in body){
@@ -59,10 +66,12 @@ class DeleteTableColumn extends React.Component{
                         col.value = body[key].COLUMN_NAME;
                         col.label = body[key].COLUMN_NAME;
                         columns= [...columns,col];
+                        type[body[key].COLUMN_NAME]=body[key].COLUMN_TYPE;
                     }
                     this.setState({
                         columnName: columns,
-                        selectTable: value
+                        selectTable: value,
+                        typeMap: type,
                     })
                 });
         }
@@ -74,58 +83,33 @@ class DeleteTableColumn extends React.Component{
         }
     }
 
-    handleCilckButton(){
-
-        let tables = this.state.selectTable;
-        let selectColumn = this.deleteColumn.state.value;
-
-        if( tables == [] ||  selectColumn == "") {
-            message.error("请重新选择操作类型");
-            this.setState({
-                selectTable:[], //级联选择中选中的表名
-                tableName: [], // 列表显示的内容
-                columnName: [],
-            })
-        }
-        else{
-            let targetUrl = "http://localhost:8080/test/deleteTableColumn?dbType=" + tables[0] + "&dbName="+tables[1]+"&tableName="+tables[2]+"&columnName="+selectColumn;
-            console.log(targetUrl);
-            fetch(targetUrl).then(res=>res.text())
-                .then(body=>{
-                    if(body == "true"){
-                        message.success('删除成功');
-                    }
-                    else{
-                        message.error('删除失败')
-                    }
-                });
-        }
+    handleSelectChange(e){
+        let type= this.state.typeMap[e];
+        this.setState({
+            sourceType:type,
+            selectColumn:e
+        })
     }
 
     render(){
         return(
             <div>
-                选择进行操作的表名：
-                <br /><br />
-                <Cascader options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
-                <br /><br /><br />
-                选择要删除的列：
-                <br /><br />
-
-                <RadioGroup ref={e => this.deleteColumn = e} options={this.state.columnName} />
-                {/*设计成多选框，后台遍历传递的列名，分别执行*/}
-                <br /><br /><br />
-
-                <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
-                    <Icon type="file-sync" /> 执行操作
-                </Button>
-
+                输入表：
+                <Cascader ref={e => this.cascaderTableName = e} options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
+                <br/> <br/>
+                输入字段：
+                <Select style={{ width: '20%' }} onChange={this.handleSelectChange.bind(this)}>
+                    {this.state.columnName.map((item,index)=>{
+                        return <Option key={index} value={item.value}>{item.label}</Option>
+                    })}
+                </Select>
+                <br/> <br/>
+                已选字段类型：
+                <Input ref={e => this.oldType = e} style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
+                <br/> <br/>
             </div>
-
-        )
-
+        );
     }
-
 }
-export default DeleteTableColumn;
 
+export default UpdateColumnValue;

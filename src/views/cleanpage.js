@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import "antd/dist/antd.css";
-import "./style.css"
+import "./style.css";
 import {
     Layout, Menu, Breadcrumb, Icon, Button,
 } from 'antd';
@@ -10,6 +10,11 @@ import DeleteByNull from "../component/cleanpage/deletebynull";
 import DeleteByCondition from "../component/cleanpage/deletebycondition";
 import DeleteTableColumn from "../component/cleanpage/deletetablecolumn";
 import CompletFiled from "../component/cleanpage/completfiled";
+import UpdateColumnType from "../component/cleanpage/updatecolumntype";
+import UpdateColumnValue from "../component/cleanpage/updatecolumnvalue";
+import CutString from "../component/cleanpage/cutstring";
+import ReplaceString from "../component/cleanpage/replaceString";
+import DataVerify from "../component/cleanpage/dataverify";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
@@ -39,18 +44,19 @@ class CleanPage extends React.Component{
                                 <Menu.Item key="deleteTableColumn"><NavLink to="/dataclean/deleteTableColumn">删除指定列</NavLink></Menu.Item>
                             </SubMenu>
 
-                            <SubMenu key="sub2" title={<span><Icon type="form" />字段修改</span>}>
-                                <Menu.Item key="5">日期</Menu.Item>
-                                <Menu.Item key="6">前后缀</Menu.Item>
-                            </SubMenu>
-                            <Menu.Item key="item1">
-                                <Icon type="plus-square" />
-                                <span>修改列属性</span>
-                            </Menu.Item>
+                            <SubMenu key="sub2" title={<span><Icon type="form" />修改字段</span>}>
+                                <Menu.Item key="updateValue"><NavLink to="/dataclean/updateValue">修改值</NavLink></Menu.Item>
+                                <Menu.Item key="updateType"><NavLink to="/dataclean/updateType">修改类型</NavLink></Menu.Item>
+                                <Menu.Item key="cutString"><NavLink to="/dataclean/cutString">剪切字符串</NavLink></Menu.Item>
+                                <Menu.Item key="replaceString"><NavLink to="/dataclean/replaceString">字符串替换</NavLink></Menu.Item>
+                                <Menu.Item key="dataVerify"><NavLink to="/dataclean/dataVerify">数据验证</NavLink></Menu.Item>
 
+                            </SubMenu>
                             <Menu.Item key="completFiled">
+                                <NavLink to="/dataclean/completFiled">
                                 <Icon type="plus-square" />
-                                <span><NavLink to="/dataclean/completFiled">字段补全</NavLink></span>
+                                <span>字段补全</span>
+                                </NavLink>
                             </Menu.Item>
                         </Menu>
                     </Sider>
@@ -68,9 +74,12 @@ class CleanPage extends React.Component{
                                 <Route path="/dataclean/deleteByNull" component={DeleteByNull}/>
                                 <Route path="/dataclean/deleteByCondition" component={DeleteByCondition}/>
                                 <Route path="/dataclean/deleteTableColumn" component={DeleteTableColumn}/>
-
                                 <Route path="/dataclean/completFiled" component={CompletFiled}/>
-
+                                <Route path="/dataclean/updateType" component={UpdateColumnType}/>
+                                <Route path="/dataclean/updateValue" component={UpdateColumnValue}/>
+                                <Route path="/dataclean/cutString" component={CutString}/>
+                                <Route path="/dataclean/replaceString" component={ReplaceString}/>
+                                <Route path="/dataclean/dataVerify" component={DataVerify}/>
                             </main>
 
                         </Content>

@@ -1,21 +1,113 @@
-import React from "react"
-import {Cascader, Input, Select, Radio, Button, Icon, message} from "antd"
+import React from "react";
+import "antd/dist/antd.css";
+import {Button, Cascader, Icon, Input, message, Select} from "antd";
+
 const Option = Select.Option;
 
-class CompletFiled extends React.Component{
+const options = [{
+    value: 'boolean',
+    label: 'boolean',
+    children: [{
+        value: 'BOOLEAN',
+        label: 'BOOLEAN',
+    }],
+}, {
+    value: 'character',
+    label: 'character',
+    children: [{
+        value: 'CHAR',
+        label: 'CHAR',
+    },{
+        value: 'VARCHAR',
+        label: 'VARCHAR',
+    }],
+},{
+    value: 'bit',
+    label: 'bit',
+    children: [{
+        value: 'BIT',
+        label: 'BIT',
+    },{
+        value: 'BIT VARYING',
+        label: 'BIT VARYING',
+    }],
+},{
+    value: 'exact numeric',
+    label: 'exact numeric',
+    children: [{
+        value: 'NUMERIC',
+        label: 'NUMERIC',
+    },{
+        value: 'DECIMAL',
+        label: 'DECIMAL',
+    },{
+        value: 'INTEGER',
+        label: 'INTEGER',
+    },{
+        value: 'SMALLINT',
+        label: 'SMALLINT',
+    }],
+},{
+    value: 'approximate numeric',
+    label: 'approximate numeric',
+    children: [{
+        value: 'FLOAT',
+        label: 'FLOAT',
+    },{
+        value: 'REAL',
+        label: 'REAL',
+    },{
+        value: 'DOUBLEPRECISION',
+        label: 'DOUBLEPRECISION',
+    }],
+},{
+    value: 'datetime',
+    label: 'datetime',
+    children: [{
+        value: 'DATE',
+        label: 'DATE',
+    },{
+        value: 'TIME',
+        label: 'TIME',
+    },{
+        value: 'TIMESTAMP',
+        label: 'TIMESTAMP',
+    }],
+},{
+    value: 'interval',
+    label: 'interval',
+    children: [{
+        value: 'INTERVAL',
+        label: 'INTERVAL',
+    }],
+},{
+    value: 'large objects',
+    label: 'large objects',
+    children: [{
+        value: 'CHARACTERLARGE OBJECT',
+        label: 'CHARACTERLARGE OBJECT',
+    },{
+        value: 'BINARY LARGE OBJECT',
+        label: 'BINARY LARGE OBJECT',
+    }],
+}];
+
+
+class UpdateColumnType extends React.Component {
+
     constructor(props){
         super(props);
         this.state={
-            tableName: [], // 级联选择中显示的内容
             selectTable:[], //级联选择中选中的表名
+            tableName: [], // 列表显示的内容
             columnName: [], //表中的列名
-            selectColumn:"",//Select选中的列名
+            selectColumn:"",
             sourceType:"",
+            targetType:"",
             typeMap:{},
-            isCustomize:false,
+
         }
     }
-
     componentWillMount(){
         let temp = JSON.parse(localStorage.getItem("tableName"));
         let table = [];
@@ -89,34 +181,16 @@ class CompletFiled extends React.Component{
             selectColumn:e
         })
     }
-    handleRadionChange(e){
-        if(e.target.value == 'customize'){
-            this.setState({
-                isCustomize:true
-            })
-        }else{
-            this.setState({
-                isCustomize:false
-            })
-        }
 
+    handleTypeChange(e){
+        //console.log(e);
+        //修改类型长度的默认值
     }
 
     handleCilckButton(){
-        let targetUrl;
         let path = this.cascaderTableName.state.value;
-        if(this.defaultValue){
-            if(!this.defaultValue.state.value){
-                message.error("默认值不能为空")
-                return;
-            }else{
-                targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=${this.defaultValue.state.value}`;
-            }
-        }
-        else {
-            targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=null`;
-        }
-        console.log(targetUrl);
+        let newType=this.newType.state.value[1]+this.typeLength.state.value;
+        let targetUrl = `http://localhost:8080/test/updateColumnType?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&column=${this.state.selectColumn}&oldType=${this.oldType.state.value}&newType=${newType}`;
         fetch(targetUrl).then(res=>res.text())
             .then(body=>{
                 if(body == "true"){
@@ -142,24 +216,24 @@ class CompletFiled extends React.Component{
                 </Select>
                 <br/> <br/>
                 已选字段类型：
-                <Input  style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
+                <Input ref={e => this.oldType = e} style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
                 <br/> <br/>
-                填入值:
-                <Radio.Group ref={e => this.completType = e} defaultValue="average" buttonStyle="solid" onChange={this.handleRadionChange.bind(this)}>
-                    <Radio.Button value="average">平均值</Radio.Button>
-                    <Radio.Button value="mode">众数</Radio.Button>
-                    <Radio.Button value="median">中位数</Radio.Button>
-                    <Radio.Button value="customize">自定义</Radio.Button>
-                </Radio.Group>
 
-                {this.state.isCustomize&&<div> <br/> <br/>请输入默认值：<Input ref={e => this.defaultValue = e} size={"small"} style={{ width: '20%' }} /></div>}
+                目标字段类型：
+                <Cascader ref={e => this.newType = e} options={options} onChange={this.handleTypeChange.bind(this)} placeholder="Please select" />
                 <br/> <br/>
+                类型长度：
+                <Input ref={e => this.typeLength = e} style={{ width: '10%' }} defaultValue={"(255)"}/>
+                <br/> <br/>
+
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
-
             </div>
         );
+
     }
+
 }
-export default CompletFiled;
+
+export default UpdateColumnType;

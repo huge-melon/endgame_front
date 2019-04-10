@@ -21,12 +21,12 @@ const { Header, Content, Sider ,Table} = Layout;
 添加点击事件，点击后返回，从顶级菜单算起的完整的名称
 
 应该后端按照[添加数据库名，和数据库类型]
+
+添加删除连接的功能
 ，*/
 
 
 class HomePage extends React.Component{
-
-
     constructor(props){
         super(props);
         this.state={
@@ -131,8 +131,6 @@ class HomePage extends React.Component{
 
     // 树状下拉菜单
     mySubMenu=(data)=>{
-        console.log("****************")
-        console.log(data)
           return data.map((menu,index)=>{
                 if(menu.children){
                     return (
@@ -141,8 +139,6 @@ class HomePage extends React.Component{
                             </SubMenu>
                     )}
                 else {
-                  /*拆开写， dbname和dbtype放在一起，字符串，直接查，*/
-
                     return <Menu.Item key={menu.TABLE_NAME} > <Icon type="table" />{menu.TABLE_NAME} </Menu.Item> /*onClick={this.handleClick.bind(this)}*/
                 }
             })

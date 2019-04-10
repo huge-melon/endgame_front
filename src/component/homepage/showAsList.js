@@ -13,6 +13,16 @@ class ShowAsList1 extends React.Component{
         }
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log("componentWillReceiveProps");
+        console.log(this.props.data.datas);
+        this.setState({
+                listData: nextProps.data.datas
+            }
+        )
+    }
+
+
     handleSubmit=()=>{
         let searchInfo = this.props.form.getFieldsValue();
         searchInfo.dbName=this.props.data.dbName;
@@ -25,18 +35,30 @@ class ShowAsList1 extends React.Component{
                 this.setState({
                     listData:body
                 });
+                console.log("body")
+                console.log(body)
             });
+
+        searchInfo.dbName="";
+        searchInfo.collectionName="";
+        searchInfo.key_field="";
+        searchInfo.operation="";
+        searchInfo.keyWord="";
+        this.props.form.setFieldsValue(searchInfo);
+
+
     }
 
     render(){
         if(!listData){
-
             console.log("**%%&&:")
             console.log(this.props.data.datas);
             listData = this.props.data.datas;
         }
         else{
             listData = this.state.listData;
+            console.log("second")
+            console.log(this.state.listData);
         }
         const { getFieldDecorator } = this.props.form;
         let k=0;

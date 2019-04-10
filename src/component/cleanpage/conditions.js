@@ -15,7 +15,7 @@ class Condition extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            ColumnName: [], //条件选项框中显示表的列名
+            columnName: [], //条件选项框中显示表的列名
 
         }
     }
@@ -32,7 +32,7 @@ class Condition extends React.Component {
 
     add = () => {
         this.setState({
-            ColumnName: this.props.columnNameList,
+            columnName: this.props.columnNameList,
         })
         const { form } = this.props;
         const keys = form.getFieldValue('keys');
@@ -69,7 +69,7 @@ class Condition extends React.Component {
                             <InputGroup compact>
                                 {getFieldDecorator('column'+k)(
                                 <Select style={{ width: '50%' }}>
-                                    {this.state.ColumnName.map((item,index)=>{
+                                    {this.state.columnName.map((item,index)=>{
                                         return <Option key={index} value={item.value}>{item.label}</Option>
                                     })}
                                 </Select>)}
