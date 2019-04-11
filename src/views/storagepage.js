@@ -2,6 +2,7 @@ import React from "react"
 import {Cascader, Icon, Layout, Radio,Menu} from "antd";
 import { Route,NavLink } from 'react-router-dom';
 import Rdb2Rdb from "../component/storagepage/rdb2rdb";
+import Rdb2Mongo from "../component/storagepage/rdb2mongodb";
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider ,Table} = Layout;
@@ -27,8 +28,10 @@ class StoragePage extends React.Component {
                                 </NavLink>
                             </Menu.Item>
                             <Menu.Item key="rdb2nodb">
-                                <Icon type="plus-square" />
-                                <span>关系型到非关系型</span>
+                                <NavLink to="/dataexport/rdb2mongo">
+                                    <Icon type="plus-square" />
+                                    关系型到非关系型
+                                </NavLink>
                             </Menu.Item>
                          {/*   <Menu.Item key="nodb2nodb">
                                 <Icon type="plus-square" />
@@ -47,6 +50,7 @@ class StoragePage extends React.Component {
                         >
                             <main>
                                 <Route path="/dataexport/rdb2rdb"  component={Rdb2Rdb} />
+                                <Route path="/dataexport/rdb2mongo"  component={Rdb2Mongo} />
                             </main>
 
                         </Content>

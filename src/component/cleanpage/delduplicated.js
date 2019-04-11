@@ -141,7 +141,7 @@ class DelDuplicated extends React.Component{
                 <br /><br />
                 <CheckboxGroup options={this.state.columnName}  onChange={this.CheckboxonChange.bind(this)} />{/*选择每列展示的行*/}
                 <br /><br /><br />
-                指定区分列：
+                选择主键：
                 <br /><br />
                 <Select
                     showSearch

@@ -45,19 +45,22 @@ class CleanPage extends React.Component{
                             </SubMenu>
 
                             <SubMenu key="sub2" title={<span><Icon type="form" />修改字段</span>}>
-                                <Menu.Item key="updateValue"><NavLink to="/dataclean/updateValue">修改值</NavLink></Menu.Item>
-                                <Menu.Item key="updateType"><NavLink to="/dataclean/updateType">修改类型</NavLink></Menu.Item>
-                                <Menu.Item key="cutString"><NavLink to="/dataclean/cutString">剪切字符串</NavLink></Menu.Item>
+{/*
+                                <Menu.Item key="updateValue"><NavLink to="/dataclean/updateValue">日期格式转换</NavLink></Menu.Item>
+*/}
+                                <Menu.Item key="updateType"><NavLink to="/dataclean/updateType">类型修改</NavLink></Menu.Item>
+                                <Menu.Item key="cutString"><NavLink to="/dataclean/cutString">字符串剪切</NavLink></Menu.Item>
                                 <Menu.Item key="replaceString"><NavLink to="/dataclean/replaceString">字符串替换</NavLink></Menu.Item>
                                 <Menu.Item key="dataVerify"><NavLink to="/dataclean/dataVerify">数据验证</NavLink></Menu.Item>
-
                             </SubMenu>
+
                             <Menu.Item key="completFiled">
                                 <NavLink to="/dataclean/completFiled">
                                 <Icon type="plus-square" />
                                 <span>字段补全</span>
                                 </NavLink>
                             </Menu.Item>
+
                         </Menu>
                     </Sider>
                     <Layout style={{ padding: "0 24px 24px" }}>

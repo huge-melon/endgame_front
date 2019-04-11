@@ -12,6 +12,9 @@ class ShowAsList1 extends React.Component{
             listData : []
         }
     }
+    componentWillMount(){
+        listData=undefined;
+    }
 
     componentWillReceiveProps(nextProps){
         console.log("componentWillReceiveProps");
@@ -50,6 +53,9 @@ class ShowAsList1 extends React.Component{
     }
 
     render(){
+
+        console.log("ListData");
+        console.log(listData);
         if(!listData){
             console.log("**%%&&:")
             console.log(this.props.data.datas);

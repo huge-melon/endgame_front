@@ -1,31 +1,28 @@
 import React from "react"
-import {Button, Cascader, Icon, message, Radio} from "antd";
+import {Button, Cascader, Checkbox, Icon, message, Radio} from "antd";
 import MapTable from "./mappingtable";
 
-class Rdb2Rdb extends React.Component{
+const CheckboxGroup = Checkbox.Group;
+
+class Rdb2Mongo extends React.Component{
 
     constructor(props){
         super(props);
         this.state={
-            tableName: [], // 列表显示的内容
-            sourceColumnName: [],
+            sqlTableName: [], // 列表显示的内容
+            nosqlTableName:[], // 列表显示的内容
             sourceSelectTable:[], //级联选择中选中的表名
-            targetColumnName: [],
+            sourceColumnName: [], //多选框显示的列名
             targetSelectTable:[], //级联选择中选中的表名
-            userDefine: false,
-            sourceName:[],
-            targetName:[],
         }
     }
 
     componentWillMount(){
         let temp = JSON.parse(localStorage.getItem("tableName"));
-        let table = [];
+        let sqlTable = [];
+        let nosqlTable=[];
         if(temp){
             for(let first in temp){
-                if(temp[first].title == "MongoDB"){
-                    continue;
-                }
                 let grandfather = {value: "",label: "",children: []};
                 grandfather.value = temp[first].title;
                 grandfather.label = temp[first].title;
@@ -44,13 +41,20 @@ class Rdb2Rdb extends React.Component{
                     }
                     grandfather.children = [...grandfather.children,father];
                 }
-                table = [...table,grandfather];
+                if(grandfather.label == "MongoDB"){
+                    nosqlTable = [...nosqlTable,grandfather];
+                }
+                else {
+                    sqlTable = [...sqlTable,grandfather];
+                }
             }
             this.setState({
-                tableName : table
+                sqlTableName : sqlTable,
+                nosqlTableName : nosqlTable
             })
         }
     };
+
 
 
     //根据级联选择框的内容从数据库中提取元数据
@@ -65,7 +69,7 @@ class Rdb2Rdb extends React.Component{
                     for(let key in body){
                         let col = {};
                         col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME+" "+body[key].COLUMN_TYPE;
+                        col.label = body[key].COLUMN_NAME;
                         columns= [...columns,col];
                     }
                     this.setState({
@@ -86,99 +90,57 @@ class Rdb2Rdb extends React.Component{
     TargetChange(value) {
         console.log(value);
         if(value.length > 0 ){
-            let targetUrl = "http://localhost:8080/test/gettablemetadata?dbType=" + value[0] + "&dbName=" + value[1] + "&tableName="
-                + value[2];
-            let columns = [];
-            fetch(targetUrl).then(res=>res.json())
-                .then(body=>{
-                    for(let key in body){
-                        let col = {};
-                        col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME+" "+body[key].COLUMN_TYPE;
-                        columns= [...columns,col];
-                    }
-                    this.setState({
-                        targetColumnName: columns,
-                        targetSelectTable: value
-                    })
-                });
+            this.setState({
+                targetSelectTable: value
+            })
         }
         else {
             this.setState({
-                targetColumnName: [],
                 targetSelectTable: []
             })
         }
     }
 
-    RadioChange(value){
-        let flag =  value.target.value == "yes" ? true : false;
-        this.setState({
-            userDefine: flag
-        })
-    }
-
     // 执行导出工作
     handleCilckButton(){
         //传递 源表名，目标表名，标志，Sourcemap， Targetmap
-        let source = this.state.sourceName;
-        let target = this.state.targetName;
-        let flag = this.state.userDefine;
         let sourcePath = this.state.sourceSelectTable ; //级联选择中选中的表名
         let targetPath = this.state.targetSelectTable;  //级联选择中选中的表名
+        let chooseColumns = this.exportColumn.state.value;
 
+        console.log("sourcePath")
+        console.log(sourcePath)
+        console.log("targetPath")
+        console.log(targetPath)
+        console.log("chooseColumns")
+        console.log(chooseColumns)
 
-        if( sourcePath == [] ||  targetPath == "" ||(flag == true && (source == [] ||target == [] ))) {
+        if( sourcePath == [] ||  targetPath == [] || chooseColumns == []) {
             message.error("请重新选择操作类型");
             this.setState({
-                tableName: [], // 列表显示的内容
                 sourceColumnName: [],
                 sourceSelectTable:[], //级联选择中选中的表名
-                targetColumnName: [],
                 targetSelectTable:[], //级联选择中选中的表名
-                userDefine: false,
-                sourceName:[],
                 targetName:[],
             })
         }
         else{
             //通过Post方法
-            let targetUrl="http://localhost:8080/test/rdbToRdb";
+            let targetUrl="http://localhost:8080/test/rdbToMongo";
             let requestBody={};
             requestBody.sourceDbType=sourcePath[0];
             requestBody.sourceDbName=sourcePath[1];
             requestBody.sourceTableName=sourcePath[2];
+            requestBody.sourceColumnList = chooseColumns;
+
             requestBody.targetDbType=targetPath[0];
             requestBody.targetDbName=targetPath[1];
-            requestBody.targetTableName=targetPath[2];
-            if(!flag){
-                let source = this.state.sourceColumnName;
-                let target = this.state.targetColumnName;
-                let sourceColumn=[];
-                let targetColumn=[];
-                for(let so in source){
-                    sourceColumn.push(source[so].value);
-                }
-                for(let ta in target){
-                    targetColumn.push(target[ta].value);
-                }
-                let finalColumn= [];
-                for(let s in sourceColumn){
-                    for(let t in targetColumn){
-                        if(sourceColumn[s] == targetColumn[t]){
-                            finalColumn.push(sourceColumn[s]);
-                        }
-                    }
-                }
-                requestBody.sourceColumnList = finalColumn;
-                requestBody.targetColumnList = finalColumn;
-            }
-            else{
-                requestBody.sourceColumnList = source;
-                requestBody.targetColumnList = target;
-            }
-            console.log("Rdb2Rdb requestBody")
+            requestBody.targetCollectionName=targetPath[2];
+
+            console.log("requestBody")
             console.log(requestBody)
+
+            console.log(targetUrl);
             fetch(targetUrl,{
                 method:"POST",
                 body:JSON.stringify(requestBody),
@@ -193,44 +155,25 @@ class Rdb2Rdb extends React.Component{
                         message.error("导出失败");
                     }
                 });
-
         }
     }
 
-    //接受从子组件传递过来的字段名的对应关系
-    receiveMap(mapTable){
-        let sourceList= [];
-        let targetList= [];
-        for(let k in mapTable.keys){
-            sourceList.push(mapTable["source"+mapTable.keys[k]]);
-            targetList.push(mapTable["target"+mapTable.keys[k]]);
-        }
-        this.setState({
-            sourceName:sourceList,
-            targetName:targetList,
-        })
-        console.log("rdb2rdb接受子组件的值");
-        console.log(sourceList);
-        console.log(targetList);
-    }
+
 
     render(){
         return (
             <div>
                 源数据库表：
-                <Cascader style={{ width: '20%' }} options={this.state.tableName} onChange={this.SourceChange.bind(this)} placeholder="Please select" />
+                <Cascader style={{width:"20%"}} options={this.state.sqlTableName} onChange={this.SourceChange.bind(this)} placeholder="Please select" />
                 <br /><br />
                 目标数据库表：
-                <Cascader style={{ width: '20%' }} options={this.state.tableName} onChange={this.TargetChange.bind(this)} placeholder="Please select" />
+                <Cascader style={{width:"20%"}} options={this.state.nosqlTableName} onChange={this.TargetChange.bind(this)} placeholder="Please select" />
                 <br /><br />
-                自定义映射字段：
-                <Radio.Group defaultValue="no" buttonStyle="solid" onChange={this.RadioChange.bind(this)}>
-                    <Radio.Button value="yes">是</Radio.Button>
-                    <Radio.Button value="no">否</Radio.Button>
-                </Radio.Group>
+                选择导出的列：
                 <br /><br />
-                {this.state.userDefine&&<MapTable sourceList={this.state.sourceColumnName} targetList={this.state.targetColumnName} receiveFromSon={this.receiveMap.bind(this)}/>}
+                <CheckboxGroup ref={e => this.exportColumn = e} options={this.state.sourceColumnName}/>
                 <br /><br />
+
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
@@ -238,4 +181,4 @@ class Rdb2Rdb extends React.Component{
         )
     }
 }
-export default Rdb2Rdb;
+export default Rdb2Mongo;
