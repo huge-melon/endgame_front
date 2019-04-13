@@ -55,7 +55,7 @@ class ShowAsList1 extends React.Component{
     render(){
 
         console.log("ListData");
-        console.log(listData);
+        console.log(this.state.listData);
         if(!listData){
             console.log("**%%&&:")
             console.log(this.props.data.datas);

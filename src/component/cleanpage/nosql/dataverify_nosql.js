@@ -1,10 +1,14 @@
 import React from "react";
 import "antd/dist/antd.css";
 import {Button, Cascader, Icon, Input, message, Select,Radio} from "antd";
-
+import UpdateDataTable from "./updatedatatable";
 const Option = Select.Option;
-const RadioGroup = Radio.Group;
-class CutString extends React.Component{
+const RadioGroup=Radio.Group;
+
+
+//const transLetter = {"+" : "%2B","/" : "%2F","?" : "%3F","%" : "%25","#" : "%23","&" : "%26","\\":"%5C"};
+
+class Dataverify_nosql extends React.Component{
 
     constructor(props){
         super(props);
@@ -15,6 +19,9 @@ class CutString extends React.Component{
             selectColumn:"",//Select选中的列名
             sourceType:"",
             typeMap:{},
+            data:[], //传给子组件的数值
+            connectMess:{},
+            isShow:false,
         }
     }
 
@@ -23,6 +30,9 @@ class CutString extends React.Component{
         let table = [];
         if(temp){
             for(let first in temp){
+                if(temp[first].title != "MongoDB"){
+                    continue;
+                }
                 let grandfather = {value: "",label: "",children: []};
                 grandfather.value = temp[first].title;
                 grandfather.label = temp[first].title;
@@ -49,9 +59,6 @@ class CutString extends React.Component{
         }
     };
 
-
-
-
     //根据级联选择框的内容从数据库中提取元数据
     CascaderonChange(value) {
         console.log(value);
@@ -64,10 +71,10 @@ class CutString extends React.Component{
                 .then(body=>{
                     for(let key in body){
                         let col = {};
-                        col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME;
+                        col.value = body[key]._id;
+                        col.label = body[key]._id;
                         columns= [...columns,col];
-                        type[body[key].COLUMN_NAME]=body[key].COLUMN_TYPE;
+                        type[body[key]._id]=body[key].value.type;
                     }
                     this.setState({
                         columnName: columns,
@@ -92,29 +99,81 @@ class CutString extends React.Component{
         })
     }
 
-
     handleCilckButton(){
-        //未修改完
-        let path = this.cascaderTableName.state.value;
-        let targetUrl = `http://localhost:8080/test/cutString?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&priKey=${this.priKey.state.value}&opType=${this.opType.state.value}&beginKey=${this.beginPos.state.value}&endKey=${this.endPos.state.value}`;
+        let path = this.state.selectTable;
+        let columnName = this.state.selectColumn;
+        let regularExpress = this.regularExpress.state.value;
+        let priKey="_id";
+      /*  let newRegular="";
+        for(let i=0;i<regularExpress.length;i++){
+            if(transLetter[regularExpress[i]]){
+                newRegular+=transLetter[regularExpress[i]];
+            }
+            else {
+                newRegular+=regularExpress[i];
+            }
+        }
 
+        console.log("Old RE:"+ regularExpress);
+        console.log("New RE:"+ newRegular);*/
+       // let targetUrl = `http://localhost:8080/test/dataVerify?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${columnName}&priKey=${priKey}&regularExpress=${newRegular}`;
+
+        let targetUrl = "http://localhost:8080/test/dataVerify";
+        let requestBody ={};
+        requestBody.dbType=path[0];
+        requestBody.dbName=path[1];
+        requestBody.tableName=path[2];
+        requestBody.columnName=columnName;
+        requestBody.priKey="_id";
+
+        this.setState({
+            connectMess: requestBody,
+        })
+        requestBody.regularExpress=regularExpress;
         console.log(targetUrl);
-        fetch(targetUrl).then(res=>res.text())
+        fetch(targetUrl,{
+            method:"POST",
+            body:JSON.stringify(requestBody),
+            headers: {
+                'content-type': 'application/json'
+            },
+        }).then(res=>res.json())
             .then(body=>{
-                if(body == "true"){
-                    message.success('修改成功');
+                console.log("正则表达式验证：");
+                console.log(body);
+                let temp=[];
+                for(let i=0;i<body.length;i++){
+                    let node={};
+                    node.id=body[i][priKey];
+                    if(!body[i][columnName]){
+                        node.sourcedata = "null"
+                    }
+                    else{
+                        node.sourcedata = body[i][columnName];
+                    }
+                    node.key = node.id;
+                    temp.push(node);
                 }
-                else{
-                    message.error('出现未知错误');
-                }
+                console.log("temp:");
+                console.log(temp);
+                this.setState({
+                    data:temp,
+                    isShow:true,
+                })
             });
+    }
+
+    configShow(){
+        this.setState({
+            isShow:false,
+        })
     }
 
     render(){
         return(
             <div>
-                输入表：
-                <Cascader ref={e => this.cascaderTableName = e} options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
+                输入集合：
+                <Cascader  options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
                 <br/> <br/>
                 输入字段：
                 <Select style={{ width: '20%' }} onChange={this.handleSelectChange.bind(this)}>
@@ -124,33 +183,19 @@ class CutString extends React.Component{
                 </Select>
                 <br/> <br/>
                 已选字段类型：
-                <Input ref={e => this.dataType = e} style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
-                <br/> <br/>
-                选择主键：
-
-                <RadioGroup ref={e => this.priKey = e} options={this.state.columnName} />
-
-                <br/> <br/>
-                定位方式：
-                <RadioGroup  ref={e => this.opType = e} defaultValue="pos" buttonStyle="solid">
-                    <Radio.Button value="pos">位置索引</Radio.Button>
-                    <Radio.Button value="key">关键字</Radio.Button>
-                </RadioGroup >
-
-                <br /><br /><br />
-                起始位置：
-                <Input ref={e => this.beginPos = e} style={{ width: '20%' }} />
-                <br/> <br/>
-                结束位置：
-                <Input ref={e => this.endPos = e} style={{ width: '20%' }} />
+                <Input style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
                 <br/> <br/>
 
+                校验的正则表达式：
+                <Input ref={e => this.regularExpress = e} style={{ width: '20%' }} />
+                <br/> <br/>
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
+                <UpdateDataTable data={this.state.data} configShow={this.configShow.bind(this)} isShowModal={this.state.isShow} connectMess={this.state.connectMess}/>
             </div>
         );
     }
 }
 
-export default CutString;
+export default Dataverify_nosql;

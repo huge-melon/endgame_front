@@ -6,7 +6,7 @@ const Option = Select.Option;
 const CheckboxGroup = Checkbox.Group;
 
 
-class DelDuplicated extends React.Component{
+class Delduplicated_nosql extends React.Component{
 
     constructor(props){
         super(props);
@@ -15,7 +15,6 @@ class DelDuplicated extends React.Component{
             tableName: [], // 列表显示的内容
             columnName: [],
             checkedValues: [], // 多选框中选中的
-            selectID: "",
         }
     }
 
@@ -24,6 +23,9 @@ class DelDuplicated extends React.Component{
         let table = [];
         if(temp){
             for(let first in temp){
+                if(temp[first].title!="MongoDB"){
+                    continue;
+                }
                 let grandfather = {value: "",label: "",children: []};
                 grandfather.value = temp[first].title;
                 grandfather.label = temp[first].title;
@@ -69,8 +71,8 @@ class DelDuplicated extends React.Component{
                 .then(body=>{
                     for(let key in body){
                         let col = {};
-                        col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME;
+                        col.value = body[key]._id;
+                        col.label = body[key]._id;
                         columns= [...columns,col];
                     }
                     this.setState({
@@ -87,39 +89,22 @@ class DelDuplicated extends React.Component{
         }
     }
 
-    SelecthandleChange(value) {
-        console.log(`selected ${value}`);
-        this.setState({
-            selectID: value
-        })
-    }
-
-    SelecthandleBlur() {
-        console.log('blur');
-    }
-
-    SelecthandleFocus() {
-        console.log('focus');
-    }
-
     handleCilckButton(){
 
         let tables = this.state.selectTable;
         let cols = this.state.checkedValues.toString();
-        let id = this.state.selectID;
 
-        if( tables == [] ||  cols == "" ||  id == "") {
+        if( tables == [] ||  cols == "" ) {
             message.error("请重新选择操作类型");
             this.setState({
                 selectTable:[], //级联选择中选中的表名
                 tableName: [], // 列表显示的内容
                 columnName: [],
                 checkedValues: [], // 多选框中选中的
-                selectID: ""
             })
         }
         else{
-            let targetUrl = "http://localhost:8080/test/delDuplicatedData?dbType=" + tables[0] + "&dbName="+tables[1]+"&tableName="+tables[2]+"&columnsName="+cols+"&id="+id;
+            let targetUrl = "http://localhost:8080/test/delDuplicatedData?dbType=" + tables[0] + "&dbName="+tables[1]+"&tableName="+tables[2]+"&columnsName="+cols+"&id=id";
             console.log(targetUrl);
             fetch(targetUrl).then(res=>res.text())
                 .then(body=>{
@@ -139,24 +124,7 @@ class DelDuplicated extends React.Component{
                 <br /><br /><br />
                 选择要进行对比的列：
                 <br /><br />
-                <CheckboxGroup options={this.state.columnName}  onChange={this.CheckboxonChange.bind(this)} />{/*选择每列展示的行*/}
-                <br /><br /><br />
-                选择主键：
-                <br /><br />
-                <Select
-                    showSearch
-                    style={{ width: 200 }}
-                    placeholder="Select a column"
-                    optionFilterProp="children"
-                    onChange={this.SelecthandleChange.bind(this)}
-                    onFocus={this.SelecthandleFocus}
-                    onBlur={this.SelecthandleBlur}
-                    filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                >
-                    {this.state.columnName.map((item,index)=>{
-                            return <Option key={index} value={item.value}>{item.label}</Option>
-                        })}
-                </Select>
+                <CheckboxGroup options={this.state.columnName}  onChange={this.CheckboxonChange.bind(this)} />
                 <br /><br /><br />
                 是否区分大小写：
                 <br /><br />
@@ -170,8 +138,6 @@ class DelDuplicated extends React.Component{
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
-
-
             </div>
 
         )
@@ -179,5 +145,5 @@ class DelDuplicated extends React.Component{
     }
 
 }
-export default DelDuplicated;
+export default Delduplicated_nosql;
 

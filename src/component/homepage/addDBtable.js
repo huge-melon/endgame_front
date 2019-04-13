@@ -8,7 +8,8 @@ import {
     Input,
     Select,
     DatePicker,
-    Icon
+    Icon,
+    message,
 } from "antd";
 import "antd/dist/antd.css";
 
@@ -41,7 +42,14 @@ class AddTable extends React.Component {
                 console.log("addDB: ");
                 console.log(JSON.stringify(dbInfo));
                 console.log(body)
-                this.sendTableName(body);
+                if(body.error){
+                    console.log("Connect error")
+                    message.error(body.error);
+                }
+                else{
+                    message.success("连接成功");
+                    this.sendTableName(body);
+                }
             });
       //  var targetUrl2="http://localhost:8080/test/adddb?dbType=${dbInfo.dbType}";
         dbInfo.dbType="";

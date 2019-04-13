@@ -35,14 +35,14 @@ class TableData extends React.Component {
                     size="small"
                     style={{ width: 90, marginRight: 8 }}
                 >
-                    Search
+                    搜索
                 </Button>
                 <Button
                     onClick={() => this.handleReset(clearFilters)}
                     size="small"
                     style={{ width: 90 }}
                 >
-                    Reset
+                    重置
                 </Button>
             </div>
         ),

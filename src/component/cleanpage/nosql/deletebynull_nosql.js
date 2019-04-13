@@ -8,7 +8,7 @@ const CheckboxGroup = Checkbox.Group;
 
 
 
-class DeleteByNull extends React.Component{
+class Deletebynull_nosql extends React.Component{
 
     constructor(props){
         super(props);
@@ -26,6 +26,9 @@ class DeleteByNull extends React.Component{
         let table = [];
         if(temp){
             for(let first in temp){
+                if(temp[first].title!="MongoDB"){
+                    continue;
+                }
                 let grandfather = {value: "",label: "",children: []};
                 grandfather.value = temp[first].title;
                 grandfather.label = temp[first].title;
@@ -71,8 +74,8 @@ class DeleteByNull extends React.Component{
                 .then(body=>{
                     for(let key in body){
                         let col = {};
-                        col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME;
+                        col.value = body[key]._id;
+                        col.label = body[key]._id;
                         columns= [...columns,col];
                     }
                     this.setState({
@@ -125,20 +128,21 @@ class DeleteByNull extends React.Component{
     render(){
         return(
             <div>
-                选择进行操作的表名：
+                选择输入集合：
                 <br /><br />
                 <Cascader options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
                 <br /><br /><br />
-                选择要执行的方法：
+
+                选择筛选的键名：
+                <br /><br />
+                <CheckboxGroup options={this.state.columnName}  onChange={this.CheckboxonChange.bind(this)} />{/*选择每列展示的行*/}
+                <br /><br /><br />
+                选择条件组合方式：
                 <br /><br />
                 <Radio.Group defaultValue="and" buttonStyle="solid" onChange={this.RadioChange.bind(this)}>
                     <Radio.Button value="and">AND</Radio.Button>
                     <Radio.Button value="or">OR</Radio.Button>
                 </Radio.Group>
-                <br /><br /><br />
-                选择筛选的列名：
-                <br /><br />
-                <CheckboxGroup options={this.state.columnName}  onChange={this.CheckboxonChange.bind(this)} />{/*选择每列展示的行*/}
                 <br /><br /><br />
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
@@ -148,4 +152,4 @@ class DeleteByNull extends React.Component{
     }
 }
 
-export default DeleteByNull;
+export default Deletebynull_nosql;

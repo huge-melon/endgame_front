@@ -1,8 +1,11 @@
-import React from "react"
-import {Cascader, Input, Select, Radio, Button, Icon, message} from "antd"
-const Option = Select.Option;
+import React from "react";
+import "antd/dist/antd.css";
+import {Button, Cascader, Icon, Input, message, Select,Radio} from "antd";
 
-class CompletFiled extends React.Component{
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
+class CutString_nosql extends React.Component{
+
     constructor(props){
         super(props);
         this.state={
@@ -12,7 +15,6 @@ class CompletFiled extends React.Component{
             selectColumn:"",//Select选中的列名
             sourceType:"",
             typeMap:{},
-            isCustomize:false,
         }
     }
 
@@ -21,6 +23,10 @@ class CompletFiled extends React.Component{
         let table = [];
         if(temp){
             for(let first in temp){
+                if(temp[first].title != "MongoDB"){
+                    continue;
+                }
+
                 let grandfather = {value: "",label: "",children: []};
                 grandfather.value = temp[first].title;
                 grandfather.label = temp[first].title;
@@ -47,9 +53,6 @@ class CompletFiled extends React.Component{
         }
     };
 
-
-
-
     //根据级联选择框的内容从数据库中提取元数据
     CascaderonChange(value) {
         console.log(value);
@@ -62,10 +65,11 @@ class CompletFiled extends React.Component{
                 .then(body=>{
                     for(let key in body){
                         let col = {};
-                        col.value = body[key].COLUMN_NAME;
-                        col.label = body[key].COLUMN_NAME;
+                        col.value = body[key]._id;
+                        col.label = body[key]._id;
                         columns= [...columns,col];
-                        type[body[key].COLUMN_NAME]=body[key].COLUMN_TYPE;
+                        //为了获取每种数据的类型
+                        type[body[key]._id]=body[key].value.type;
                     }
                     this.setState({
                         columnName: columns,
@@ -89,33 +93,13 @@ class CompletFiled extends React.Component{
             selectColumn:e
         })
     }
-    handleRadionChange(e){
-        if(e.target.value == 'customize'){
-            this.setState({
-                isCustomize:true
-            })
-        }else{
-            this.setState({
-                isCustomize:false
-            })
-        }
 
-    }
 
     handleCilckButton(){
-        let targetUrl;
+        //未修改完
         let path = this.cascaderTableName.state.value;
-        if(this.defaultValue){
-            if(!this.defaultValue.state.value){
-                message.error("默认值不能为空")
-                return;
-            }else{
-                targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=${this.defaultValue.state.value}`;
-            }
-        }
-        else {
-            targetUrl = `http://localhost:8080/test/completFiled?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&completType=${this.completType.state.value}&defaultValue=null`;
-        }
+        let targetUrl = `http://localhost:8080/test/cutString?dbType=${path[0]}&dbName=${path[1]}&tableName=${path[2]}&columnName=${this.state.selectColumn}&priKey=_id&opType=${this.opType.state.value}&beginKey=${this.beginPos.state.value}&endKey=${this.endPos.state.value}`;
+
         console.log(targetUrl);
         fetch(targetUrl).then(res=>res.text())
             .then(body=>{
@@ -131,35 +115,40 @@ class CompletFiled extends React.Component{
     render(){
         return(
             <div>
-                输入表：
+                输入集合：
                 <Cascader ref={e => this.cascaderTableName = e} options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
                 <br/> <br/>
-                输入字段：
+                输入键名：
                 <Select style={{ width: '20%' }} onChange={this.handleSelectChange.bind(this)}>
                     {this.state.columnName.map((item,index)=>{
                         return <Option key={index} value={item.value}>{item.label}</Option>
                     })}
                 </Select>
                 <br/> <br/>
-                已选字段类型：
-                <Input  style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
+                已选键的类型：
+                <Input ref={e => this.dataType = e} style={{ width: '20%' }} value={this.state.sourceType}  disabled={true}/>
                 <br/> <br/>
-                填入值:
-                <Radio.Group ref={e => this.completType = e} defaultValue="average" buttonStyle="solid" onChange={this.handleRadionChange.bind(this)}>
-                    <Radio.Button value="average">平均值</Radio.Button>
-                    <Radio.Button value="mode">众数</Radio.Button>
-                    <Radio.Button value="median">中位数</Radio.Button>
-                    <Radio.Button value="customize">自定义</Radio.Button>
-                </Radio.Group>
 
-                {this.state.isCustomize&&<div> <br/> <br/>请输入默认值：<Input ref={e => this.defaultValue = e} size={"small"} style={{ width: '20%' }} /></div>}
+                定位方式：
+                <RadioGroup  ref={e => this.opType = e} defaultValue="pos" buttonStyle="solid">
+                    <Radio.Button value="pos">位置索引</Radio.Button>
+                    <Radio.Button value="key">关键字</Radio.Button>
+                </RadioGroup >
+
+                <br /><br /><br />
+                起始位置：
+                <Input ref={e => this.beginPos = e} style={{ width: '20%' }} />
                 <br/> <br/>
+                结束位置：
+                <Input ref={e => this.endPos = e} style={{ width: '20%' }} />
+                <br/> <br/>
+
                 <Button type="primary" onClick={this.handleCilckButton.bind(this)}>
                     <Icon type="file-sync" /> 执行操作
                 </Button>
-
             </div>
         );
     }
 }
-export default CompletFiled;
+
+export default CutString_nosql;

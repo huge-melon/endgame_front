@@ -123,6 +123,7 @@ class DeleteByCondition extends React.Component{
        /* conditions.headMap = columnName;
         conditions.endMap = conditionValue;*/
         console.log("conditions")
+        console.log(conditionTable)
         console.log(JSON.stringify(conditionTable));
 
         if( tablePath == [] ) {
@@ -137,6 +138,7 @@ class DeleteByCondition extends React.Component{
             //通过Post方法
             let targetUrl="http://localhost:8080/test/deleteByCondition";
             console.log(targetUrl);
+
             fetch(targetUrl,{
                 method:"POST",
                 body:JSON.stringify(conditionTable),
@@ -146,9 +148,9 @@ class DeleteByCondition extends React.Component{
             }).then(res=>res.text())
                 .then(body=>{
                     if(body == "true"){
-                        message.success('导出成功');
+                        message.success('删除成功');
                     }else {
-                        message.error("导出失败");
+                        message.error("删除失败");
                     }
                 });
         }

@@ -31,14 +31,14 @@ class TableMetaData extends React.Component {
                     size="small"
                     style={{ width: 90, marginRight: 8 }}
                 >
-                    Search
+                    搜索
                 </Button>
                 <Button
                     onClick={() => this.handleReset(clearFilters)}
                     size="small"
                     style={{ width: 90 }}
                 >
-                    Reset
+                    重置
                 </Button>
             </div>
         ),
@@ -71,7 +71,8 @@ class TableMetaData extends React.Component {
     }
     render() {
         const data = this.props.metadata;
-
+        console.log("TableMetaData:");
+        console.log(data);
         const columns = [{
             title: '列名',
             dataIndex: 'COLUMN_NAME',
