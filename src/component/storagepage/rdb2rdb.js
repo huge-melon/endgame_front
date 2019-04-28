@@ -223,7 +223,7 @@ class Rdb2Rdb extends React.Component{
                 目标数据库表：
                 <Cascader style={{ width: '20%' }} options={this.state.tableName} onChange={this.TargetChange.bind(this)} placeholder="Please select" />
                 <br /><br />
-                自定义映射字段：
+                自定义映射规则：
                 <Radio.Group defaultValue="no" buttonStyle="solid" onChange={this.RadioChange.bind(this)}>
                     <Radio.Button value="yes">是</Radio.Button>
                     <Radio.Button value="no">否</Radio.Button>

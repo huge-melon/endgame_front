@@ -62,19 +62,19 @@ class Condition extends React.Component {
         const formItems = keys.map((k, index) => (
 
             <Row key={k} gutter={0}>
-                <Col span={9}>
+                <Col span={12} >
                     <Form.Item {...formItemLayoutWithOutLabel}
                                required={true}
                                key={k}>
                             <InputGroup compact>
                                 {getFieldDecorator('column'+k)(
-                                <Select style={{ width: '50%' }}>
+                                <Select style={{ width: '200px' }}>
                                     {this.state.columnName.map((item,index)=>{
                                         return <Option key={index} value={item.value}>{item.label}</Option>
                                     })}
                                 </Select>)}
                                 {getFieldDecorator('operator'+k)(
-                                    <Select style={{ width: '15%' }}>
+                                    <Select style={{ width: '90px' }}>
                                         <Option value=" = "> = </Option>
                                         <Option value=" > "> &gt; </Option>
                                         <Option value=" < "> &lt; </Option>
@@ -88,7 +88,7 @@ class Condition extends React.Component {
                                     </Select>
                                 )}
                                 {getFieldDecorator('value'+k)(
-                                <Input style={{ width: '35%' }} placeholder="请输入条件" />)}
+                                <Input style={{ width: '200px' }} placeholder="请输入条件" />)}
                             </InputGroup>
                     </Form.Item>
                 </Col>
@@ -106,16 +106,16 @@ class Condition extends React.Component {
                 <Form>
                     {formItems}
                     <Row key="button" gutter={0}>
-                        <Col span={5} offset={1}>
+                        <Col span={3} offset={2}>
                             <Form.Item {...formItemLayoutWithOutLabel}>
                                 <Button type="dashed" onClick={this.add} style={{ width: '100%' }}>
                                     <Icon type="plus" /> 添加条件
                                 </Button>
                             </Form.Item>
                         </Col>
-                        <Col span={5}>
+                        <Col span={3}>
                             <Form.Item {...formItemLayoutWithOutLabel}>
-                                <Button type="dashed" onClick={this.sendTable.bind(this)} style={{ width: '30%' }}>
+                                <Button type="dashed" onClick={this.sendTable.bind(this)} style={{ width: '100%' }}>
                                     提交
                                 </Button>
                             </Form.Item>
