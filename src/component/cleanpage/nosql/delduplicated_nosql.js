@@ -122,7 +122,7 @@ class Delduplicated_nosql extends React.Component{
                 <br /><br />
                 <Cascader options={this.state.tableName} onChange={this.CascaderonChange.bind(this)} placeholder="Please select" />
                 <br /><br /><br />
-                选择要进行对比的列：
+                选择要进行对比的键名：
                 <br /><br />
                 <CheckboxGroup options={this.state.columnName}  onChange={this.CheckboxonChange.bind(this)} />
                 <br /><br /><br />
